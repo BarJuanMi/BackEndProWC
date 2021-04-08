@@ -9,8 +9,8 @@ const UsuarioSchema = Schema({
     google: { type: Boolean, default: false }
 });
 
-// Esto { __v, _id, password, ...object }
-// no permite que se extraiga no que esta 
+// Esto { __v, ...object }
+// no permite que se extraiga lo que esta 
 // entre los corchetes, es decir ignora todo eso
 UsuarioSchema.method('toJSON', function() {
     const { __v, _id, password, ...object } = this.toObject();

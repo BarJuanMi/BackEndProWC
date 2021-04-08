@@ -18,7 +18,14 @@ dbConnection();
 
 //Rutas
 app.use('/api/usuarios', require('./routes/usuarios.route'));
-app.use('/api/login', require('./routes/auth.route'))
+app.use('/api/login', require('./routes/auth.route'));
+app.use('/api/hospitales', require('./routes/hospitales.route'));
+app.use('/api/medicos', require('./routes/medicos.route'));
+app.use('/api/busqueda', require('./routes/busqueda.route'));
+app.use('/api/files/uploads', require('./routes/uploads.route'));
+app.use('/api/files/uploadspdf', require('./routes/uploadspdf.route'));
+
+app.use('/api/modelos', require('./routes/modelos.route'));
 
 
 app.listen(process.env.PORT_EXP, () => {

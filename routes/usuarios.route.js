@@ -13,6 +13,7 @@ const router = Router();
 //2do argumento los middleware
 //3er argumento la operacion del controlador
 router.get('/', validarJWT, getUsuarios);
+
 router.post('/crearUsuario', [
         check('nombre', 'El nombre es obligatorio').not().isEmpty(),
         check('email', 'El email es obligatorio').not().isEmpty(),
@@ -22,13 +23,15 @@ router.post('/crearUsuario', [
     ],
     crearUsuario
 );
+
 router.put('/actualizarUsuario/:id', [
         validarJWT,
-        check('nombre', 'El nombre es obligatorio').not().isEmpty(),
+        check('nombre', 'El nombre del usuario es obligatorio').not().isEmpty(),
         validarCampos
     ],
     actualizarUsuario
 );
+
 router.delete('/eliminarUsuario/:id', validarJWT, eliminarUsuario);
 
 module.exports = router;

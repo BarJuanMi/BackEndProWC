@@ -8,14 +8,28 @@ const { generarJWT } = require('../helpers/jwt')
  * @param {Metodo para obtener todos los usuarios} req 
  * @param {*} res 
  */
-const getUsuarios = async(req, res) => {
+const getUsuarios = async(req, res = response) => {
 
-    //Los filtros de los campos a mostrar se 
-    // controlan desde el modelo
-    const usuarios = await Usuario.find({});
+    //Si no manda el desde en el path, pone 0
+    const desde = Number(req.query.desde) || 0;
+
+    //Collecion de promesas que se ejecutan simultaneamente
+    //separadas por una coma dentro del arreglo
+    const [usuarios, total] = await Promise.all([
+        //Promesa 1
+        //Los filtros de los campos a mostrar se controlan desde el modelo
+        Usuario.find({}, 'nombre email role google img')
+        .skip(desde) //se salta lo registros antes del desde (posicion en collecion)
+        .limit(Number(process.env.LIMIT_QUERY)),
+
+        //Promesa 2
+        Usuario.countDocuments()
+    ]);
+
     res.json({
         status: true,
-        usuarios
+        usuarios,
+        total
     })
 }
 
