@@ -28,6 +28,7 @@ router.post('/crearMedico', [
 router.put('/actualizarMedico/:id', [
         validarJWT,
         check('nombre', 'El nombre es obligatorio').not().isEmpty(),
+        check('hospital', 'El hospital es obligatorio').not().isEmpty(),
         validarCampos
     ],
     actualizarMedico

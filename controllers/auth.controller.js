@@ -87,7 +87,21 @@ const loginGoogleSignIn = async(req, res = response) => {
     }
 }
 
+const renewToken = async(req, res = response) => {
+
+    const uid = req.uid;
+
+    //Generar el TOKEN de JWT
+    const token = await generarJWT(uid);
+
+    res.json({
+        status: true,
+        token
+    });
+}
+
 module.exports = {
     login,
-    loginGoogleSignIn
+    loginGoogleSignIn,
+    renewToken
 }

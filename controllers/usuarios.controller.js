@@ -137,6 +137,7 @@ const eliminarUsuario = async(req, res = response) => {
 
         res.json({
             status: true,
+            msg: 'Usuario eliminado correctamente',
             usuario: usuarioEliminado
         });
 

@@ -37,23 +37,88 @@ const crearHospital = async(req, res = reponse) => {
         console.log(error);
         res.status(500).json({
             status: true,
-            msg: 'Error durante la creación del Hospital - Ver logs'
+            msg: 'Error durante la creación del hospital - Ver logs'
         });
     }
 }
 
-const actualizarHospital = (req, res = response) => {
-    res.json({
-        status: true,
-        msg: 'actualizarHospital Funcionando'
-    })
+/**
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ * @returns 
+ */
+const actualizarHospital = async(req, res = response) => {
+
+    const id = req.params.id;
+    const uid = req.uid;
+
+    try {
+        const resHopital = await Hospital.findById(id);
+
+        if (!resHopital) {
+            return res.status(400).json({
+                status: false,
+                msg: 'No existe el hospital con ese id'
+            });
+        }
+
+        const cambiosHospital = {
+            ...req.body,
+            usuario: uid
+        }
+
+        const hospitalActualizado = await Hospital.findByIdAndUpdate(id, cambiosHospital, { new: true });
+
+        res.json({
+            status: true,
+            hospital: hospitalActualizado
+        });
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            status: false,
+            msg: 'Error durante la actualización del hospital - Ver logs'
+        });
+    }
 }
 
-const eliminarHospital = (req, res = response) => {
-    res.json({
-        status: true,
-        msg: 'eliminarHospital Funcionando'
-    })
+/**
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ * @returns 
+ */
+const eliminarHospital = async(req, res = response) => {
+
+    const id = req.params.id;
+
+    try {
+        const resHospitalDB = await Hospital.findById(id);
+
+        if (!resHospitalDB) {
+            return res.status(400).json({
+                status: false,
+                msg: 'No existe el hospital con ese id'
+            });
+        }
+
+        const hospitalEliminado = await Hospital.findByIdAndDelete(id);
+
+        res.json({
+            status: true,
+            msg: 'Hospital eliminado correctamente',
+            hospital: hospitalEliminado
+        });
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            status: false,
+            msg: 'Error durante la eliminacion del Hospital - Ver logs'
+        });
+    }
 }
 
 module.exports = {
