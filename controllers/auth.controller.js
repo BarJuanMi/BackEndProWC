@@ -3,8 +3,14 @@ const Usuario = require('../models/usuario.model');
 const bcrypt = require('bcryptjs');
 const { generarJWT } = require('../helpers/jwt');
 const { googleVerify } = require('../helpers/google-verify');
+const { v4: uuidv4 } = require('uuid');
 
-
+/**
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ * @returns 
+ */
 const login = async(req, res = response) => {
 
     const { email, password } = req.body;
@@ -45,6 +51,11 @@ const login = async(req, res = response) => {
     }
 }
 
+/**
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ */
 const loginGoogleSignIn = async(req, res = response) => {
 
     const googleToken = req.body.token;
@@ -59,7 +70,7 @@ const loginGoogleSignIn = async(req, res = response) => {
             usuario = new Usuario({
                 nombre: name,
                 email: email,
-                password: String(process.env.PASS_DEFAULT),
+                password: uuidv4(),
                 img: picture,
                 google: true
             })
@@ -87,6 +98,12 @@ const loginGoogleSignIn = async(req, res = response) => {
     }
 }
 
+/**
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ * @returns 
+ */
 const renewToken = async(req, res = response) => {
 
     const uid = req.uid;
@@ -94,9 +111,20 @@ const renewToken = async(req, res = response) => {
     //Generar el TOKEN de JWT
     const token = await generarJWT(uid);
 
+    //Obtenemos la informacion del usuario por uid
+    const usuario = await Usuario.findById(uid);
+
+    if (!usuario) {
+        return res.status(400).json({
+            status: false,
+            msg: 'No existe el usuario con ese id'
+        });
+    }
+
     res.json({
         status: true,
-        token
+        token,
+        usuario
     });
 }
 

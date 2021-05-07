@@ -4,8 +4,8 @@ const bcrypt = require('bcryptjs');
 const { generarJWT } = require('../helpers/jwt')
 
 /**
- * 
- * @param {Metodo para obtener todos los usuarios} req 
+ * Metodo para obtener todos los usuarios
+ * @param {*} req 
  * @param {*} res 
  */
 const getUsuarios = async(req, res = response) => {
@@ -34,8 +34,8 @@ const getUsuarios = async(req, res = response) => {
 }
 
 /**
- * 
- * @param {Metodo paraa crear un nuevo usuario} req 
+ * Metodo para crear un nuevo usuario
+ * @param {*} req 
  * @param {*} res 
  * @returns 
  */
@@ -80,6 +80,12 @@ const crearUsuario = async(req, res = response) => {
     }
 }
 
+/**
+ * Metodo para actualizar la informacion de un usuario
+ * @param {*} req 
+ * @param {*} res 
+ * @returns 
+ */
 const actualizarUsuario = async(req, res = response) => {
 
     const uid = req.params.id;
@@ -96,10 +102,31 @@ const actualizarUsuario = async(req, res = response) => {
             });
         }
 
-        // Si el body del update trajera todos los tags con su valor 
-        // lo que hago es eliminarlos del objeto serializado campos
-        // para que eso no viaje al update del documento en BD
+        const algo = req.body;
+        console.log(algo);
+
+        // Deconstruyo el request en sus objetos que componen el json y los pongo en la varaible campos
         const { password, google, email, role, ...campos } = req.body;
+
+        /*if ( resUsuarioDB.email !== email){
+            const existeEmail = await Usuario.findOne({email});
+            if( existeEmail ) {
+                return res.status(400).json({
+                    status: false,
+                    msg: 'Ya existe un usuario con ese email'
+                });
+            }
+        }
+
+        if( !resUsuarioDB.google ){
+            campos.email = email;
+        } else if (resUsuarioDB.email !== email) {
+            return res.status(400).json({
+                status: false,
+                msg: 'Usuario de google no puede cambiar su correo';
+            });
+        }    
+        */
 
         const usuarioActualizado = await Usuario.findByIdAndUpdate(uid, campos, { new: true });
 
@@ -117,6 +144,12 @@ const actualizarUsuario = async(req, res = response) => {
     }
 }
 
+/**
+ * Metodo para eliminar fisicamente un usuario
+ * @param {*} req 
+ * @param {*} res 
+ * @returns 
+ */
 const eliminarUsuario = async(req, res = response) => {
 
     const uid = req.params.id;

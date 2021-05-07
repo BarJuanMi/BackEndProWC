@@ -13,7 +13,7 @@ const fs = require('fs');
 const fileImageUpload = (req, res = response) => {
 
     const tipo = req.params.tipo;
-    const id = req.params.id;
+    const uid = req.params.id;
 
     const tiposValidos = ['hospitales', 'medicos', 'usuarios'];
     if (!tiposValidos.includes(tipo)) {
@@ -63,11 +63,12 @@ const fileImageUpload = (req, res = response) => {
         }
 
         //Actualizar la BD
-        actualizarImagen(tipo, id, nombreArch);
+        actualizarImagen(tipo, uid, nombreArch);
 
         res.json({
             status: true,
-            msg: 'Carga satisfactoria de la imagen'
+            msg: 'Carga satisfactoria de la imagen',
+            nombreArchivo: nombreArch
         });
     });
 }

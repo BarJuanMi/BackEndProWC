@@ -5,7 +5,7 @@ const Usuario = require('../models/usuario.model');
 const Medico = require('../models/medico.model');
 
 const borrarImagen = (antiguoPath) => {
-    console.log('antiguoPath ' + antiguoPath);
+    //console.log('antiguoPath ' + antiguoPath);
     if (fs.existsSync(antiguoPath)) {
         fs.unlinkSync(antiguoPath); //Borra la imagen de la carpeta del SO
     }
@@ -14,6 +14,8 @@ const borrarImagen = (antiguoPath) => {
 const actualizarImagen = async(tipo, id, nombreArch) => {
 
     let antiguoPath = '';
+
+    console.log(tipo);
 
     switch (tipo) {
         case 'medicos':
@@ -50,6 +52,9 @@ const actualizarImagen = async(tipo, id, nombreArch) => {
                 return false;
             }
             antiguoPath = `./uploads/${tipo}/${usuario.img}`;
+            console.log(antiguoPath);
+            console.log(nombreArch);
+
             borrarImagen(antiguoPath);
 
             usuario.img = nombreArch;
