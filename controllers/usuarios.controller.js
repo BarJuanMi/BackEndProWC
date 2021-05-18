@@ -4,7 +4,8 @@ const bcrypt = require('bcryptjs');
 const { generarJWT } = require('../helpers/jwt')
 
 /**
- * Metodo para obtener todos los usuarios
+ * Metodo para obtener todos los usuarios usando el dfesde como 
+ * condicion inical de busqueda hasta el final de la coleccion.
  * @param {*} req 
  * @param {*} res 
  */
@@ -20,6 +21,7 @@ const getUsuarios = async(req, res = response) => {
         //Los filtros de los campos a mostrar se controlan desde el modelo
         Usuario.find({}, 'nombre email role google img')
         .skip(desde) //se salta lo registros antes del desde (posicion en collecion)
+        .sort({ role: 1 })
         .limit(Number(process.env.LIMIT_QUERY)),
 
         //Promesa 2
@@ -103,10 +105,10 @@ const actualizarUsuario = async(req, res = response) => {
         }
 
         const algo = req.body;
-        console.log(algo);
 
         // Deconstruyo el request en sus objetos que componen el json y los pongo en la varaible campos
-        const { password, google, email, role, ...campos } = req.body;
+        // pero cosas como el password y google no se van a actualizar, aunque le envie valores nuevos en la peticion
+        const { password, google, ...campos } = req.body;
 
         /*if ( resUsuarioDB.email !== email){
             const existeEmail = await Usuario.findOne({email});
