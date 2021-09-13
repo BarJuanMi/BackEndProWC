@@ -14,6 +14,8 @@ const getUsuarios = async(req, res = response) => {
     //Si no manda el desde en el path, pone 0
     const desde = Number(req.query.desde) || 0;
 
+    console.log(desde);
+
     //Collecion de promesas que se ejecutan simultaneamente
     //separadas por una coma dentro del arreglo
     const [usuarios, total] = await Promise.all([
@@ -21,7 +23,7 @@ const getUsuarios = async(req, res = response) => {
         //Los filtros de los campos a mostrar se controlan desde el modelo
         Usuario.find({}, 'nombre email role google img')
         .skip(desde) //se salta lo registros antes del desde (posicion en collecion)
-        .sort({ role: 1 })
+        .sort({ nombre: 1 })
         .limit(Number(process.env.LIMIT_QUERY)),
 
         //Promesa 2
@@ -103,8 +105,6 @@ const actualizarUsuario = async(req, res = response) => {
                 msg: 'No existe el usuario con ese id'
             });
         }
-
-        const algo = req.body;
 
         // Deconstruyo el request en sus objetos que componen el json y los pongo en la varaible campos
         // pero cosas como el password y google no se van a actualizar, aunque le envie valores nuevos en la peticion

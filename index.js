@@ -10,6 +10,19 @@ const app = express();
 //Configurar CORS
 app.use(cors());
 
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    // authorized headers for preflight requests
+    // https://developer.mozilla.org/en-US/docs/Glossary/preflight_request
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+    next();
+    app.options('*', (req, res) => {
+        // allowed XHR methods
+        res.header('Access-Control-Allow-Methods', 'GET, PATCH, PUT, POST, DELETE, OPTIONS');
+        res.send();
+    });
+});
+
 //Lectura y Parseo del Body
 app.use(express.json());
 
@@ -29,8 +42,13 @@ app.use('/api/files/uploads', require('./routes/uploads.route'));
 app.use('/api/files/uploadspdf', require('./routes/uploadspdf.route'));
 
 app.use('/api/modelos', require('./routes/modelos.route'));
+app.use('/api/monitores', require('./routes/monitores.route'));
+app.use('/api/prestamos', require('./routes/prestamos.route'));
+
+app.use('/api/retiros', require('./routes/retiros.route'));
+app.use('/api/utiles', require('./routes/utiles.route'));
 
 
-app.listen(process.env.PORT_EXP, () => {
-    console.log('Servidor corriendo en puerto ' + process.env.PORT_EXP);
+app.listen(process.env.PORT, () => {
+    console.log('Servidor corriendo en puerto ' + process.env.PORT);
 });

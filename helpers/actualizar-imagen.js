@@ -3,6 +3,8 @@ const fs = require('fs');
 const Hospital = require('../models/hospital.model');
 const Usuario = require('../models/usuario.model');
 const Medico = require('../models/medico.model');
+const Modelo = require('../models/modelo.model');
+const Monitor = require('../models/monitor.model');
 
 const borrarImagen = (antiguoPath) => {
     //console.log('antiguoPath ' + antiguoPath);
@@ -11,7 +13,7 @@ const borrarImagen = (antiguoPath) => {
     }
 }
 
-const actualizarImagen = async(tipo, id, nombreArch) => {
+const actualizarImagenMantenimientos = async(tipo, id, nombreArch) => {
 
     let antiguoPath = '';
 
@@ -61,10 +63,48 @@ const actualizarImagen = async(tipo, id, nombreArch) => {
             await usuario.save();
             return true;
             break;
+
+
+    }
+}
+
+const actualizarImagenWC = async(tipo, id, nombreArch) => {
+
+    let antiguoPath = '';
+
+    console.log(tipo);
+
+    switch (tipo) {
+        case 'modelos':
+            const modelo = await Modelo.findById(id);
+            if (!modelo) {
+                return false;
+            }
+            antiguoPath = `./uploads/${tipo}/${modelo.img}`;
+            borrarImagen(antiguoPath);
+
+            modelo.img = nombreArch;
+            await modelo.save();
+            return true;
+            break;
+
+        case 'monitores':
+            const monitor = await Monitor.findById(id);
+            if (!monitor) {
+                return false;
+            }
+            antiguoPath = `./uploads/${tipo}/${monitor.img}`;
+            borrarImagen(antiguoPath);
+
+            monitor.img = nombreArch;
+            await monitor.save();
+            return true;
+            break;
     }
 
 }
 
 module.exports = {
-    actualizarImagen
+    actualizarImagenMantenimientos,
+    actualizarImagenWC
 }

@@ -2,6 +2,8 @@ const { response } = require('express');
 const Hospital = require('../models/hospital.model');
 const Usuario = require('../models/usuario.model');
 const Medico = require('../models/medico.model');
+const Modelo = require('../models/modelo.model');
+const Monitor = require('../models/monitor.model');
 
 const busquedaTotal = async(req, res = response) => {
 
@@ -42,6 +44,14 @@ const busquedaPorColeccion = async(req, res = response) => {
 
         case 'hospitales':
             data = await Hospital.find({ nombre: regex });
+            break;
+
+        case 'modelos':
+            data = await Modelo.find({ nombres: regex });
+            break;
+
+        case 'monitores':
+            data = await Monitor.find({ nombres: regex });
             break;
 
         default:

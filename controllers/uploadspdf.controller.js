@@ -14,7 +14,7 @@ const filePDFUpload = (req, res = response) => {
     const tipo = req.params.tipo;
     const id = req.params.id;
 
-    const tiposValidos = ['contratos', 'pazysalvo', 'desprendibles', 'incapacidades'];
+    const tiposValidos = ['contratos', 'pazysalvos', 'desprendibles', 'incapacidades'];
     if (!tiposValidos.includes(tipo)) {
         return res.status(400).json({
             status: false,
@@ -52,9 +52,12 @@ const filePDFUpload = (req, res = response) => {
     //Path para guardar la imagen
     const uploadPath = `./uploads/${tipo}/${nombreArch}`;
 
+    console.log(uploadPath);
+
     //Mover la imagen al path destino
     file.mv(uploadPath, (err) => {
         if (err) {
+            console.log(err);
             return res.status(500).json({
                 status: false,
                 msg: 'Error al mover el archivo'
@@ -84,6 +87,7 @@ const filePDFReturn = (req, res = response) => {
     const pathImg = path.join(__dirname, `../uploads/${tipo}/${pdfName}.pdf`);
 
     if (fs.existsSync(pathImg)) {
+        res.setHeader('Content-Type', 'application/pdf');
         //res.contentType("application/pdf");
         fs.createReadStream(pathImg).pipe(res);
     } else {
