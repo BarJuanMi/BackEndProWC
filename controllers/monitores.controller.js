@@ -23,6 +23,11 @@ const getMonitores = async(req, res = response) => {
     })
 }
 
+/**
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ */
 const crearMonitor = async(req, res = response) => {
     try {
         const uid = req.uid; //Saca el uid (identificador del usuario dentro del token de la peticion)
