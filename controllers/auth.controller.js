@@ -14,6 +14,7 @@ const { v4: uuidv4 } = require('uuid');
 const login = async(req, res = response) => {
 
     const { email, password } = req.body;
+    var estadoActual = '';
 
     try {
         //Verificar email
@@ -24,6 +25,8 @@ const login = async(req, res = response) => {
                 msg: 'Credenciales de acceso incorrectas'
             });
         }
+
+
 
         //Verificar contraseña
         const validPassword = bcrypt.compareSync(password, resUsuarioDB.password);
@@ -36,10 +39,12 @@ const login = async(req, res = response) => {
 
         //Generar el TOKEN de JWT
         const token = await generarJWT(resUsuarioDB.id);
+        estadoActual = resUsuarioDB.estado;
 
         res.json({
             status: true,
-            token
+            token,
+            estadoActual
         })
 
     } catch (error) {

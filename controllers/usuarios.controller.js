@@ -23,7 +23,7 @@ const getUsuarios = async(req, res = response) => {
         //Los filtros de los campos a mostrar se controlan desde el modelo
         Usuario.find({}, 'nombre email role google img estado fechaCreacion')
         .skip(desde) //se salta lo registros antes del desde (posicion en collecion)
-        .sort({ nombre: 1 })
+        .sort({ fechaCreacion: 1 })
         .limit(Number(process.env.LIMIT_QUERY)),
 
         //Promesa 2
@@ -90,8 +90,6 @@ const crearUsuarioPorRegister = async(req, res = response) => {
  * @param {*} res Objeto con la data de retorno seguen la peticion
  */
 const crearUsuarioPorApp = async(req, res = response) => {
-
-    console.log('Llega a crearUsuarioPorApp');
     const { email, password } = req.body;
 
     try {
