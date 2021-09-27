@@ -84,8 +84,6 @@ const actualizarRetiro = async(req, res = repsonse) => {
             });
         }
 
-        req.body.fechaFirma = '' + new Date();
-
         const { modelo, usuarioCreacion, motivoRetiro, fechaRenuncia, ...campos } = req.body;
 
         const retiroActualizado = await Retiro.findByIdAndUpdate(idRetiro, campos, { new: true });
@@ -114,8 +112,11 @@ const buscarRetiroPorId = async(req, res = response) => {
     const idRetiro = req.params.id;
 
     try {
-        const retiroRet = await Retiro.findById(idRetiro);
-
+        const retiroRet = await Retiro
+                .findById(idRetiro)
+                .populate('modelo', 'documento nombres apellidos')
+                .populate('usuarioCreacion', 'nombre')
+                .populate('usuarioCargoPDF', 'nombre');
 
         if (!retiroRet) {
             return res.status(400).json({
