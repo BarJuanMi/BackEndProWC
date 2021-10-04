@@ -12,6 +12,8 @@ const { actualizarPDFFiles } = require('../helpers/actualizar-pdf-file')
  */
 const filePDFUpload = (req, res = response) => {
 
+    const uidUsuario = req.uid; //Saca el uid (identificador del usuario dentro del token de la peticion)
+
     const tipo = req.params.tipo;
     const id = req.params.id;
 
@@ -65,7 +67,7 @@ const filePDFUpload = (req, res = response) => {
         }
 
         //Actualizar la BD
-        actualizarPDFFiles(tipo, id, nombreArch);
+        actualizarPDFFiles(tipo, id, nombreArch, uidUsuario);
 
         res.json({
             status: true,

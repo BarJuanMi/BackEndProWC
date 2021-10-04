@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs');
 const { generarJWT } = require('../helpers/jwt')
 
 /**
- * Metodo para obtener todos los usuarios usando el dfesde como 
+ * Operación para obtener todos los usuarios usando el desde como 
  * condicion inical de busqueda hasta el final de la coleccion.
  * @param {*} req Objeto con el payload para la peticion
  * @param {*} res Objeto con la data de retorno seguen la peticion
@@ -38,7 +38,7 @@ const getUsuarios = async(req, res = response) => {
 }
 
 /**
- * Metodo para crear un nuevo usuario mediante el formulario de registro
+ * Operación para crear un nuevo usuario mediante el formulario de registro
  * @param {*} req Objeto con el payload para la peticion
  * @param {*} res Objeto con la data de retorno seguen la peticion
  */
@@ -84,7 +84,7 @@ const crearUsuarioPorRegister = async(req, res = response) => {
 }
 
 /**
- * Metodo para crear un nuevo usuario mediante el formulario interno de la APP
+ * Operación para crear un nuevo usuario mediante el formulario interno de la APP
  * debe ser creado siempre y cuando el usuario sea de tipo ADMIN_ROLE 
  * @param {*} req Objeto con el payload para la peticion
  * @param {*} res Objeto con la data de retorno seguen la peticion
@@ -126,7 +126,7 @@ const crearUsuarioPorApp = async(req, res = response) => {
 }
 
 /**
- * Metodo para actualizar la informacion de un usuario
+ * Operación para actualizar la informacion de un usuario
  * @param {*} req Objeto con el payload para la peticion
  * @param {*} res Objeto con la data de retorno seguen la peticion
  */
@@ -187,7 +187,7 @@ const actualizarUsuario = async(req, res = response) => {
 }
 
 /**
- * Metodo para eliminar fisicamente un usuario
+ * Operación para eliminar fisicamente un usuario
  * @param {*} req Objeto con el payload para la peticion
  * @param {*} res Objeto con la data de retorno seguen la peticion
  */

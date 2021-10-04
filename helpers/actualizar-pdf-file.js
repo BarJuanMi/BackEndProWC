@@ -9,7 +9,7 @@ const borrarPDF = (antiguoPath) => {
     }
 }
 
-const actualizarPDFFiles = async(tipo, id, nombreArch) => {
+const actualizarPDFFiles = async(tipo, id, nombreArch, uidUsuario) => {
     let antiguoPath = '';
 
     switch (tipo) {
@@ -22,6 +22,10 @@ const actualizarPDFFiles = async(tipo, id, nombreArch) => {
             borrarPDF(antiguoPath);
 
             retiro.pathPDF = nombreArch;
+            retiro.usuarioCargoPDF = uidUsuario;
+            retiro.fechaCargoPDF = new Date();
+            retiro.estadoCargoPDF = true;
+            retiro.estado = 'FIRMADO';
             await retiro.save();
             return true;
             break;
