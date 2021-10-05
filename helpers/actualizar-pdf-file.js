@@ -3,7 +3,7 @@ const fs = require('fs');
 const Retiro = require('../models/retiro.model');
 
 const borrarPDF = (antiguoPath) => {
-    console.log('El que va a borrar es: ' + antiguoPath)
+    //console.log('El que va a borrar es: ' + antiguoPath)
     if (fs.existsSync(antiguoPath)) {
         fs.unlinkSync(antiguoPath);
     }

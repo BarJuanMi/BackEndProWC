@@ -12,6 +12,6 @@ router.use(expressFileUpload());
 
 router.put('/:tipo/:id', validarJWT, filePDFUpload);
 
-router.get('/obtenerpdf/:tipo/:pdf', validarJWT, filePDFReturn);
+router.get('/obtenerpdf/:tipo/:pdf', filePDFReturn);
 
 module.exports = router;

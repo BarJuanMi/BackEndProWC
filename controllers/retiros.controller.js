@@ -85,7 +85,7 @@ const actualizarRetiro = async(req, res = response) => {
         const estadoAux = req.body.estadoCargoPDF;
 
         if (estadoAux === undefined) {
-            req.body.estado = 'FIRMADO SIN PDF';
+            req.body.estado = 'FIRMADO';
         }
 
         const {
