@@ -25,7 +25,6 @@ const actualizarPDFFiles = async(tipo, id, nombreArch, uidUsuario) => {
             retiro.usuarioCargoPDF = uidUsuario;
             retiro.fechaCargoPDF = new Date();
             retiro.estadoCargoPDF = true;
-            retiro.estado = 'FIRMADO';
             await retiro.save();
             return true;
             break;

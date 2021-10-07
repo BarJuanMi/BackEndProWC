@@ -14,8 +14,6 @@ const getUsuarios = async(req, res = response) => {
     //Si no manda el desde en el path, pone 0
     const desde = Number(req.query.desde) || 0;
 
-    console.log('desde:' + desde);
-
     //Collecion de promesas que se ejecutan simultaneamente
     //separadas por una coma dentro del arreglo
     const [usuarios, total] = await Promise.all([

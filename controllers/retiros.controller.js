@@ -19,7 +19,7 @@ const getRetiros = async(req, res = response) => {
         .populate('modelo', 'documento nombres apellidos')
         .populate('usuarioCreacion', 'nombre')
         .populate('usuarioCargoPDF', 'nombre')
-        .sort({ fechaRenuncia: -1 })
+        .sort({ fechaRegistro: -1 })
         .limit(Number(process.env.LIMIT_QUERY_RETIRO)),
 
         //Promesa 2
