@@ -2,6 +2,7 @@ const { response } = require('express');
 const Usuario = require('../models/usuario.model');
 const bcrypt = require('bcryptjs');
 const { generarJWT } = require('../helpers/jwt')
+const { capitalizeWords, capitalizeWordsPPP } = require('../helpers/formateadores');
 
 /**
  * Operación para obtener todos los usuarios usando el desde como 
@@ -43,6 +44,8 @@ const getUsuarios = async(req, res = response) => {
 const crearUsuarioPorRegister = async(req, res = response) => {
 
     const { email, password } = req.body;
+
+    req.body.nombre = String(req.body.nombre).toUpperCase();
 
     try {
         //Se validara que no exista un usuario con el mismo email
@@ -88,7 +91,9 @@ const crearUsuarioPorRegister = async(req, res = response) => {
  * @param {*} res Objeto con la data de retorno seguen la peticion
  */
 const crearUsuarioPorApp = async(req, res = response) => {
-    const { email, password } = req.body;
+    const { email, password, nombre } = req.body;
+
+    req.body.nombre = String(req.body.nombre).toUpperCase();
 
     try {
         //Se validara que no exista un usuario con el mismo email
@@ -131,6 +136,7 @@ const crearUsuarioPorApp = async(req, res = response) => {
 const actualizarUsuario = async(req, res = response) => {
 
     const uid = req.params.id;
+    req.body.nombre = String(req.body.nombre).toUpperCase();
 
     try {
         // TODO: Validar token y el role usuario 
@@ -189,13 +195,11 @@ const actualizarUsuario = async(req, res = response) => {
  * @param {*} req Objeto con el payload para la peticion
  * @param {*} res Objeto con la data de retorno seguen la peticion
  */
-const eliminarUsuario = async(req, res = response) => {
+const inactivarUsuario = async(req, res = response) => {
 
     const uid = req.params.id;
 
     try {
-        // TODO: Validar token y el role usuario 
-
         const resUsuarioDB = await Usuario.findById(uid);
 
         if (!resUsuarioDB) {
@@ -204,13 +208,14 @@ const eliminarUsuario = async(req, res = response) => {
                 msg: 'No existe el usuario con ese id'
             });
         }
+        const usuarioInactivado = await Usuario.findByIdAndUpdate(uid, { estado: 'INACTIVO' }, { new: true });
 
-        const usuarioEliminado = await Usuario.findByIdAndDelete(uid);
+        //const usuarioEliminado = await Usuario.findByIdAndDelete(uid);
 
         res.json({
             status: true,
             msg: 'Usuario eliminado correctamente',
-            usuario: usuarioEliminado
+            usuario: usuarioInactivado
         });
 
     } catch (error) {
@@ -222,10 +227,77 @@ const eliminarUsuario = async(req, res = response) => {
     }
 }
 
+/**
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ * @returns 
+ */
+const reactivarUsuario = async(req, res = response) => {
+    const uid = req.params.id;
+    try {
+        const resUsuarioDB = await Usuario.findById(uid);
+        if (!resUsuarioDB) {
+            return res.status(400).json({
+                status: false,
+                msg: 'No existe el usuario con ese id'
+            });
+        }
+        const usuarioInactivado = await Usuario.findByIdAndUpdate(uid, { estado: 'ACTIVO' }, { new: true });
+
+        res.json({
+            status: true,
+            msg: 'Usuario eliminado correctamente',
+            usuario: usuarioInactivado
+        });
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            status: false,
+            msg: 'Error durante la eliminacion del Usuario - Ver logs'
+        });
+    }
+}
+
+/**
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ * @returns 
+ */
+const buscarUsuarioPorId = async(req, res = response) => {
+    const idUsuario = req.params.id;
+
+    try {
+        const usuarioRet = await Usuario.findById(idUsuario);
+
+        if (!usuarioRet) {
+            return res.status(400).json({
+                status: false,
+                msg: 'No existe el usuario con ese id'
+            });
+        }
+
+        res.json({
+            status: true,
+            usuario: usuarioRet
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            status: true,
+            msg: 'Error durante la busqueda particular del Usuario - Ver logs'
+        });
+    }
+}
+
 module.exports = {
     getUsuarios,
     crearUsuarioPorRegister,
     crearUsuarioPorApp,
     actualizarUsuario,
-    eliminarUsuario
+    inactivarUsuario,
+    buscarUsuarioPorId,
+    reactivarUsuario
 }

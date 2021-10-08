@@ -36,6 +36,8 @@ const crearMonitor = async(req, res = response) => {
             ...req.body
         });
 
+        monitorNew.nombres = String(req.body.nombre).toUpperCase();
+        monitorNew.apellidos = String(req.body.apellidos).toUpperCase();
         monitorNew.telCelular = formatearNumCelular(req.body.telCelular.replace(/\s/g, '')); //Elimina los espacios que pudieran llegar
         //monitorNew.telContEmer = formatearNumCelular(req.body.telContEmer.replace(/\s/g, ''));
         //monitorNew.genero = formatearGenero(req.body.genero);
@@ -113,6 +115,8 @@ const actualizarMonitor = async(req, res = response) => {
     const idMonitor = req.params.id;
     try {
         const resMonitorDB = await Monitor.findById(idMonitor);
+        req.body.nombres = String(req.body.nombres).toUpperCase();
+        req.body.apellidos = String(req.body.apellidos).toUpperCase();
 
         if (!resMonitorDB) {
             return res.status(400).json({
