@@ -1,5 +1,6 @@
 const { response } = require('express');
 const Retiro = require('../models/retiro.model');
+const Modelo = require('../models/modelo.model');
 const { addHoursDate } = require('../helpers/formateadores');
 
 /**
@@ -40,6 +41,8 @@ const getRetiros = async(req, res = response) => {
  */
 const crearRetiro = async(req, res = response) => {
     try {
+        const idModelo = req.body.modelo;
+
         const uid = req.uid; //Saca el uid (identificador del usuario dentro del token de la peticion)
         const retiroNew = new Retiro({
             usuarioCreacion: uid,
@@ -49,9 +52,14 @@ const crearRetiro = async(req, res = response) => {
 
         const retiroRet = await retiroNew.save();
 
+        console.log('------>' + idModelo);
+
+        const modeloInactivado = await Modelo.findByIdAndUpdate(idModelo, { estado: false, fechaInactivacion: new Date() }, { new: true });
+
         res.json({
             status: true,
-            retiroRet
+            retiroRet,
+            modeloInactivado
         });
 
     } catch (error) {
