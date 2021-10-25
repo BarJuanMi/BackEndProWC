@@ -41,6 +41,7 @@ app.use('/api/busqueda', require('./routes/busqueda.route'));
 app.use('/api/files/uploads', require('./routes/uploads.route'));
 app.use('/api/files/uploadspdf', require('./routes/uploadspdf.route'));
 
+app.use('/api/empleados', require('./routes/empleados.route'));
 app.use('/api/modelos', require('./routes/modelos.route'));
 app.use('/api/monitores', require('./routes/monitores.route'));
 app.use('/api/prestamos', require('./routes/prestamos.route'));
