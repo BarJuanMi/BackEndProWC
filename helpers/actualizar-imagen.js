@@ -5,6 +5,7 @@ const Usuario = require('../models/usuario.model');
 const Medico = require('../models/medico.model');
 const Modelo = require('../models/modelo.model');
 const Monitor = require('../models/monitor.model');
+const Empleado = require('../models/empleado.model');
 
 const borrarImagen = (antiguoPath) => {
     //console.log('antiguoPath ' + antiguoPath);
@@ -14,7 +15,6 @@ const borrarImagen = (antiguoPath) => {
 }
 
 const actualizarImagenMantenimientos = async(tipo, id, nombreArch) => {
-
     let antiguoPath = '';
 
     console.log(tipo);
@@ -69,7 +69,6 @@ const actualizarImagenMantenimientos = async(tipo, id, nombreArch) => {
 }
 
 const actualizarImagenWC = async(tipo, id, nombreArch) => {
-
     let antiguoPath = '';
 
     console.log(tipo);
@@ -98,6 +97,19 @@ const actualizarImagenWC = async(tipo, id, nombreArch) => {
 
             monitor.img = nombreArch;
             await monitor.save();
+            return true;
+            break;
+
+        case 'empleados':
+            const empleado = await Empleado.findById(id);
+            if (!empleado) {
+                return false;
+            }
+            antiguoPath = `./uploads/${tipo}/${empleado.img}`;
+            borrarImagen(antiguoPath);
+
+            empleado.img = nombreArch;
+            await empleado.save();
             return true;
             break;
     }

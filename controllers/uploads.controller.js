@@ -15,7 +15,7 @@ const fileImageUpload = (req, res = response) => {
     const tipo = req.params.tipo;
     const uid = req.params.id;
 
-    const tiposValidos = ['hospitales', 'medicos', 'usuarios', 'modelos', 'monitores'];
+    const tiposValidos = ['hospitales', 'medicos', 'usuarios', 'modelos', 'monitores', 'empleados'];
     if (!tiposValidos.includes(tipo)) {
         return res.status(400).json({
             status: false,
@@ -65,7 +65,7 @@ const fileImageUpload = (req, res = response) => {
         //Actualizar la BD
         if (tipo === 'usuarios' || tipo === 'hospitales' || tipo === 'medicos')
             actualizarImagenMantenimientos(tipo, uid, nombreArch);
-        else if (tipo === 'modelos' || tipo === 'monitores') {
+        else if (tipo === 'modelos' || tipo === 'monitores' || tipo === 'empleados') {
             actualizarImagenWC(tipo, uid, nombreArch);
         }
 

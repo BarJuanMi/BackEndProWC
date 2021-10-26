@@ -247,7 +247,7 @@ const reactivarUsuario = async(req, res = response) => {
 
         res.json({
             status: true,
-            msg: 'Usuario eliminado correctamente',
+            msg: 'Usuario reactivado correctamente',
             usuario: usuarioInactivado
         });
 
