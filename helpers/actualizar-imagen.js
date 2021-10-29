@@ -6,6 +6,7 @@ const Medico = require('../models/medico.model');
 const Modelo = require('../models/modelo.model');
 const Monitor = require('../models/monitor.model');
 const Empleado = require('../models/empleado.model');
+const Administrativo = require('../models/administrativo.model');
 
 const borrarImagen = (antiguoPath) => {
     //console.log('antiguoPath ' + antiguoPath);
@@ -110,6 +111,21 @@ const actualizarImagenWC = async(tipo, id, nombreArch) => {
 
             empleado.img = nombreArch;
             await empleado.save();
+            return true;
+            break;
+
+        case 'administrativos':
+            console.log('JKLJKL:' + id);
+
+            const administrativo = await Administrativo.findById(id);
+            if (!administrativo) {
+                return false;
+            }
+            antiguoPath = `./uploads/${tipo}/${administrativo.img}`;
+            borrarImagen(antiguoPath);
+
+            administrativo.img = nombreArch;
+            await administrativo.save();
             return true;
             break;
     }

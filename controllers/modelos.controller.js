@@ -33,12 +33,11 @@ const crearModelo = async(req, res = response) => {
             ...req.body
         });
 
-        modeloNew.nombres = String(req.body.nombre).toUpperCase();
+        modeloNew.nombres = String(req.body.nombres).toUpperCase();
         modeloNew.apellidos = String(req.body.apellidos).toUpperCase();
         modeloNew.telCelular = formatearNumCelular(req.body.telCelular.replace(/\s/g, '')); //Elimina los espacios que pudieran llegar
         //modeloNew.telContEmer = formatearNumCelular(req.body.telContEmer.replace(/\s/g, ''));
         //modeloNew.genero = formatearGenero(req.body.genero);
-
 
         const modeloRet = await modeloNew.save();
 

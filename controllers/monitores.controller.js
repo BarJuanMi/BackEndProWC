@@ -36,7 +36,7 @@ const crearMonitor = async(req, res = response) => {
             ...req.body
         });
 
-        monitorNew.nombres = String(req.body.nombre).toUpperCase();
+        monitorNew.nombres = String(req.body.nombres).toUpperCase();
         monitorNew.apellidos = String(req.body.apellidos).toUpperCase();
         monitorNew.telCelular = formatearNumCelular(req.body.telCelular.replace(/\s/g, '')); //Elimina los espacios que pudieran llegar
         //monitorNew.telContEmer = formatearNumCelular(req.body.telContEmer.replace(/\s/g, ''));

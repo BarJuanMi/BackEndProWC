@@ -45,6 +45,7 @@ app.use('/api/empleados', require('./routes/empleados.route'));
 app.use('/api/modelos', require('./routes/modelos.route'));
 app.use('/api/monitores', require('./routes/monitores.route'));
 app.use('/api/prestamos', require('./routes/prestamos.route'));
+app.use('/api/administrativos', require('./routes/administrativos.route'));
 
 app.use('/api/retiros', require('./routes/retiros.route'));
 app.use('/api/utiles', require('./routes/utiles.route'));
