@@ -6,6 +6,7 @@ const Medico = require('../models/medico.model');
 const Modelo = require('../models/modelo.model');
 const Monitor = require('../models/monitor.model');
 const Empleado = require('../models/empleado.model');
+const Vacunado = require('../models/vacunado.model');
 const Administrativo = require('../models/administrativo.model');
 
 const borrarImagen = (antiguoPath) => {
@@ -17,8 +18,6 @@ const borrarImagen = (antiguoPath) => {
 
 const actualizarImagenMantenimientos = async(tipo, id, nombreArch) => {
     let antiguoPath = '';
-
-    console.log(tipo);
 
     switch (tipo) {
         case 'medicos':
@@ -69,10 +68,8 @@ const actualizarImagenMantenimientos = async(tipo, id, nombreArch) => {
     }
 }
 
-const actualizarImagenWC = async(tipo, id, nombreArch) => {
+const actualizarImagenPersonal = async(tipo, id, nombreArch) => {
     let antiguoPath = '';
-
-    console.log(tipo);
 
     switch (tipo) {
         case 'modelos':
@@ -115,8 +112,6 @@ const actualizarImagenWC = async(tipo, id, nombreArch) => {
             break;
 
         case 'administrativos':
-            console.log('JKLJKL:' + id);
-
             const administrativo = await Administrativo.findById(id);
             if (!administrativo) {
                 return false;
@@ -129,10 +124,29 @@ const actualizarImagenWC = async(tipo, id, nombreArch) => {
             return true;
             break;
     }
+}
 
+const actualizarImagenProcesos = async(tipo, id, nombreArch) => {
+    let antiguoPath = '';
+
+    switch (tipo) {
+        case 'vacunados':
+            const vacunado = await Vacunado.findById(id);
+            if (!vacunado) {
+                return false;
+            }
+            antiguoPath = `./uploads/${tipo}/${vacunado.img}`;
+            borrarImagen(antiguoPath);
+
+            vacunado.img = nombreArch;
+            await vacunado.save();
+            return true;
+            break;
+    }
 }
 
 module.exports = {
     actualizarImagenMantenimientos,
-    actualizarImagenWC
+    actualizarImagenPersonal,
+    actualizarImagenProcesos
 }

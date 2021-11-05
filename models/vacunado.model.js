@@ -10,7 +10,6 @@ var vacunadoSchema = new Schema({
     fechaTerDosis: { type: Date, required: false },
     fechaCuarDosis: { type: Date, required: false },
     regulador: { type: String, required: true },
-    estado: { type: String, required: true },
     img: { type: String, required: false }
 }, {
     collection: 'vacunados'
