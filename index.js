@@ -41,13 +41,15 @@ app.use('/api/busqueda', require('./routes/busqueda.route'));
 app.use('/api/files/uploads', require('./routes/uploads.route'));
 app.use('/api/files/uploadspdf', require('./routes/uploadspdf.route'));
 
+app.use('/api/empleados', require('./routes/empleados.route'));
 app.use('/api/modelos', require('./routes/modelos.route'));
 app.use('/api/monitores', require('./routes/monitores.route'));
 app.use('/api/prestamos', require('./routes/prestamos.route'));
+app.use('/api/administrativos', require('./routes/administrativos.route'));
 
 app.use('/api/retiros', require('./routes/retiros.route'));
 app.use('/api/utiles', require('./routes/utiles.route'));
-
+app.use('/api/vacunados', require('./routes/vacunados.route'));
 
 app.listen(process.env.PORT, () => {
     console.log('Servidor corriendo en puerto ' + process.env.PORT);

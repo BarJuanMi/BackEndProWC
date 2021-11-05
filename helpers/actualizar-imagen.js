@@ -5,6 +5,9 @@ const Usuario = require('../models/usuario.model');
 const Medico = require('../models/medico.model');
 const Modelo = require('../models/modelo.model');
 const Monitor = require('../models/monitor.model');
+const Empleado = require('../models/empleado.model');
+const Vacunado = require('../models/vacunado.model');
+const Administrativo = require('../models/administrativo.model');
 
 const borrarImagen = (antiguoPath) => {
     //console.log('antiguoPath ' + antiguoPath);
@@ -14,10 +17,7 @@ const borrarImagen = (antiguoPath) => {
 }
 
 const actualizarImagenMantenimientos = async(tipo, id, nombreArch) => {
-
     let antiguoPath = '';
-
-    console.log(tipo);
 
     switch (tipo) {
         case 'medicos':
@@ -68,11 +68,8 @@ const actualizarImagenMantenimientos = async(tipo, id, nombreArch) => {
     }
 }
 
-const actualizarImagenWC = async(tipo, id, nombreArch) => {
-
+const actualizarImagenPersonal = async(tipo, id, nombreArch) => {
     let antiguoPath = '';
-
-    console.log(tipo);
 
     switch (tipo) {
         case 'modelos':
@@ -100,11 +97,56 @@ const actualizarImagenWC = async(tipo, id, nombreArch) => {
             await monitor.save();
             return true;
             break;
-    }
 
+        case 'empleados':
+            const empleado = await Empleado.findById(id);
+            if (!empleado) {
+                return false;
+            }
+            antiguoPath = `./uploads/${tipo}/${empleado.img}`;
+            borrarImagen(antiguoPath);
+
+            empleado.img = nombreArch;
+            await empleado.save();
+            return true;
+            break;
+
+        case 'administrativos':
+            const administrativo = await Administrativo.findById(id);
+            if (!administrativo) {
+                return false;
+            }
+            antiguoPath = `./uploads/${tipo}/${administrativo.img}`;
+            borrarImagen(antiguoPath);
+
+            administrativo.img = nombreArch;
+            await administrativo.save();
+            return true;
+            break;
+    }
+}
+
+const actualizarImagenProcesos = async(tipo, id, nombreArch) => {
+    let antiguoPath = '';
+
+    switch (tipo) {
+        case 'vacunados':
+            const vacunado = await Vacunado.findById(id);
+            if (!vacunado) {
+                return false;
+            }
+            antiguoPath = `./uploads/${tipo}/${vacunado.img}`;
+            borrarImagen(antiguoPath);
+
+            vacunado.img = nombreArch;
+            await vacunado.save();
+            return true;
+            break;
+    }
 }
 
 module.exports = {
     actualizarImagenMantenimientos,
-    actualizarImagenWC
+    actualizarImagenPersonal,
+    actualizarImagenProcesos
 }

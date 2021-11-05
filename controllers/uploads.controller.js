@@ -1,7 +1,7 @@
 const path = require('path');
 const { response } = require('express');
 const { v4: uuidv4 } = require('uuid');
-const { actualizarImagenMantenimientos, actualizarImagenWC } = require('../helpers/actualizar-imagen');
+const { actualizarImagenMantenimientos, actualizarImagenPersonal, actualizarImagenProcesos } = require('../helpers/actualizar-imagen');
 const fs = require('fs');
 
 /**
@@ -15,7 +15,7 @@ const fileImageUpload = (req, res = response) => {
     const tipo = req.params.tipo;
     const uid = req.params.id;
 
-    const tiposValidos = ['hospitales', 'medicos', 'usuarios', 'modelos', 'monitores'];
+    const tiposValidos = ['hospitales', 'medicos', 'usuarios', 'modelos', 'monitores', 'administrativos', 'empleados', 'vacunados'];
     if (!tiposValidos.includes(tipo)) {
         return res.status(400).json({
             status: false,
@@ -65,8 +65,10 @@ const fileImageUpload = (req, res = response) => {
         //Actualizar la BD
         if (tipo === 'usuarios' || tipo === 'hospitales' || tipo === 'medicos')
             actualizarImagenMantenimientos(tipo, uid, nombreArch);
-        else if (tipo === 'modelos' || tipo === 'monitores') {
-            actualizarImagenWC(tipo, uid, nombreArch);
+        else if (tipo === 'modelos' || tipo === 'monitores' || tipo === 'administrativos' || tipo === 'empleados') {
+            actualizarImagenPersonal(tipo, uid, nombreArch);
+        } else if (tipo === 'vacunados') {
+            actualizarImagenProcesos(tipo, uid, nombreArch);
         }
 
 

@@ -9,11 +9,12 @@ var retiroSchema = new Schema({
     entrevista: { type: Boolean, default: false },
     encuesta: { type: Boolean, default: false },
     fechaRegistro: { type: Date, default: Date.now },
-
     fechaFirma: { type: String, required: false },
+
     fechaCargoPDF: { type: Date, required: false },
     usuarioCargoPDF: { type: Schema.Types.ObjectId, ref: 'Usuario' },
-    pdf: { type: String, required: false },
+    pathPDF: { type: String, required: false },
+    estadoCargoPDF: { type: Boolean, default: false }
 }, {
     collection: 'retiros'
 });

@@ -2,6 +2,7 @@ const path = require('path');
 const { response } = require('express');
 const { v4: uuidv4 } = require('uuid');
 const fs = require('fs');
+const { actualizarPDFFiles } = require('../helpers/actualizar-pdf-file')
 
 /**
  * 
@@ -10,6 +11,8 @@ const fs = require('fs');
  * @returns 
  */
 const filePDFUpload = (req, res = response) => {
+
+    const uidUsuario = req.uid; //Saca el uid (identificador del usuario dentro del token de la peticion)
 
     const tipo = req.params.tipo;
     const id = req.params.id;
@@ -51,8 +54,7 @@ const filePDFUpload = (req, res = response) => {
 
     //Path para guardar la imagen
     const uploadPath = `./uploads/${tipo}/${nombreArch}`;
-
-    console.log(uploadPath);
+    //console.log(uploadPath);
 
     //Mover la imagen al path destino
     file.mv(uploadPath, (err) => {
@@ -65,11 +67,12 @@ const filePDFUpload = (req, res = response) => {
         }
 
         //Actualizar la BD
-        //actualizarImagen(tipo, id, nombreArch);
+        actualizarPDFFiles(tipo, id, nombreArch, uidUsuario);
 
         res.json({
             status: true,
-            msg: 'Carga satisfactoria del archivo'
+            msg: 'Carga satisfactoria del archivo pdf',
+            nombreArchivo: nombreArch
         });
     });
 }
@@ -88,7 +91,7 @@ const filePDFReturn = (req, res = response) => {
 
     if (fs.existsSync(pathImg)) {
         res.setHeader('Content-Type', 'application/pdf');
-        //res.contentType("application/pdf");
+        res.contentType("application/pdf");
         fs.createReadStream(pathImg).pipe(res);
     } else {
         const pathImg = path.join(__dirname, `../uploads/No_Image_Available.jpg`);

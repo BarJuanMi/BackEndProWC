@@ -4,6 +4,7 @@ const Usuario = require('../models/usuario.model');
 const Medico = require('../models/medico.model');
 const Modelo = require('../models/modelo.model');
 const Monitor = require('../models/monitor.model');
+const Administrativo = require('../models/administrativo.model');
 
 const busquedaTotal = async(req, res = response) => {
 
@@ -52,6 +53,10 @@ const busquedaPorColeccion = async(req, res = response) => {
 
         case 'monitores':
             data = await Monitor.find({ nombres: regex });
+            break;
+
+        case 'administrativos':
+            data = await Administrativo.find({ nombres: regex });
             break;
 
         default:

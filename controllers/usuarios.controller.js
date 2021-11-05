@@ -2,28 +2,27 @@ const { response } = require('express');
 const Usuario = require('../models/usuario.model');
 const bcrypt = require('bcryptjs');
 const { generarJWT } = require('../helpers/jwt')
+const { capitalizeWords, capitalizeWordsPPP } = require('../helpers/formateadores');
 
 /**
- * Metodo para obtener todos los usuarios usando el dfesde como 
+ * Operación para obtener todos los usuarios usando el desde como 
  * condicion inical de busqueda hasta el final de la coleccion.
- * @param {*} req 
- * @param {*} res 
+ * @param {*} req Objeto con el payload para la peticion
+ * @param {*} res Objeto con la data de retorno seguen la peticion
  */
 const getUsuarios = async(req, res = response) => {
 
     //Si no manda el desde en el path, pone 0
     const desde = Number(req.query.desde) || 0;
 
-    console.log(desde);
-
     //Collecion de promesas que se ejecutan simultaneamente
     //separadas por una coma dentro del arreglo
     const [usuarios, total] = await Promise.all([
         //Promesa 1
         //Los filtros de los campos a mostrar se controlan desde el modelo
-        Usuario.find({}, 'nombre email role google img')
+        Usuario.find({}, 'nombre email role google img estado fechaCreacion')
         .skip(desde) //se salta lo registros antes del desde (posicion en collecion)
-        .sort({ nombre: 1 })
+        .sort({ fechaCreacion: 1 })
         .limit(Number(process.env.LIMIT_QUERY)),
 
         //Promesa 2
@@ -38,14 +37,15 @@ const getUsuarios = async(req, res = response) => {
 }
 
 /**
- * Metodo para crear un nuevo usuario
- * @param {*} req 
- * @param {*} res 
- * @returns 
+ * Operación para crear un nuevo usuario mediante el formulario de registro
+ * @param {*} req Objeto con el payload para la peticion
+ * @param {*} res Objeto con la data de retorno seguen la peticion
  */
-const crearUsuario = async(req, res = response) => {
+const crearUsuarioPorRegister = async(req, res = response) => {
 
     const { email, password } = req.body;
+
+    req.body.nombre = String(req.body.nombre).toUpperCase();
 
     try {
         //Se validara que no exista un usuario con el mismo email
@@ -85,14 +85,58 @@ const crearUsuario = async(req, res = response) => {
 }
 
 /**
- * Metodo para actualizar la informacion de un usuario
- * @param {*} req 
- * @param {*} res 
- * @returns 
+ * Operación para crear un nuevo usuario mediante el formulario interno de la APP
+ * debe ser creado siempre y cuando el usuario sea de tipo ADMIN_ROLE 
+ * @param {*} req Objeto con el payload para la peticion
+ * @param {*} res Objeto con la data de retorno seguen la peticion
+ */
+const crearUsuarioPorApp = async(req, res = response) => {
+    const { email, password, nombre } = req.body;
+
+    req.body.nombre = String(req.body.nombre).toUpperCase();
+
+    try {
+        //Se validara que no exista un usuario con el mismo email
+        const existeEmail = await Usuario.findOne({ email });
+        if (existeEmail) {
+            return res.status(400).json({
+                status: false,
+                msg: 'Este email ya se encuentra registrado'
+            })
+        }
+
+        const usuario = new Usuario(req.body);
+
+        //Encriptar password
+        const salt = bcrypt.genSaltSync();
+        usuario.password = bcrypt.hashSync(password, salt);
+
+        //El await es para que la promesa de salvado
+        //termine antes de retornare el res
+        await usuario.save();
+
+        res.json({
+            status: true,
+            usuario
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            status: true,
+            msg: 'Error durante la creación del Usuario - Ver logs'
+        });
+    }
+}
+
+/**
+ * Operación para actualizar la informacion de un usuario
+ * @param {*} req Objeto con el payload para la peticion
+ * @param {*} res Objeto con la data de retorno seguen la peticion
  */
 const actualizarUsuario = async(req, res = response) => {
 
     const uid = req.params.id;
+    req.body.nombre = String(req.body.nombre).toUpperCase();
 
     try {
         // TODO: Validar token y el role usuario 
@@ -147,18 +191,15 @@ const actualizarUsuario = async(req, res = response) => {
 }
 
 /**
- * Metodo para eliminar fisicamente un usuario
- * @param {*} req 
- * @param {*} res 
- * @returns 
+ * Operación para eliminar fisicamente un usuario
+ * @param {*} req Objeto con el payload para la peticion
+ * @param {*} res Objeto con la data de retorno seguen la peticion
  */
-const eliminarUsuario = async(req, res = response) => {
+const inactivarUsuario = async(req, res = response) => {
 
     const uid = req.params.id;
 
     try {
-        // TODO: Validar token y el role usuario 
-
         const resUsuarioDB = await Usuario.findById(uid);
 
         if (!resUsuarioDB) {
@@ -167,13 +208,14 @@ const eliminarUsuario = async(req, res = response) => {
                 msg: 'No existe el usuario con ese id'
             });
         }
+        const usuarioInactivado = await Usuario.findByIdAndUpdate(uid, { estado: 'INACTIVO' }, { new: true });
 
-        const usuarioEliminado = await Usuario.findByIdAndDelete(uid);
+        //const usuarioEliminado = await Usuario.findByIdAndDelete(uid);
 
         res.json({
             status: true,
             msg: 'Usuario eliminado correctamente',
-            usuario: usuarioEliminado
+            usuario: usuarioInactivado
         });
 
     } catch (error) {
@@ -185,9 +227,77 @@ const eliminarUsuario = async(req, res = response) => {
     }
 }
 
+/**
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ * @returns 
+ */
+const reactivarUsuario = async(req, res = response) => {
+    const uid = req.params.id;
+    try {
+        const resUsuarioDB = await Usuario.findById(uid);
+        if (!resUsuarioDB) {
+            return res.status(400).json({
+                status: false,
+                msg: 'No existe el usuario con ese id'
+            });
+        }
+        const usuarioInactivado = await Usuario.findByIdAndUpdate(uid, { estado: 'ACTIVO' }, { new: true });
+
+        res.json({
+            status: true,
+            msg: 'Usuario reactivado correctamente',
+            usuario: usuarioInactivado
+        });
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            status: false,
+            msg: 'Error durante la eliminacion del Usuario - Ver logs'
+        });
+    }
+}
+
+/**
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ * @returns 
+ */
+const buscarUsuarioPorId = async(req, res = response) => {
+    const idUsuario = req.params.id;
+
+    try {
+        const usuarioRet = await Usuario.findById(idUsuario);
+
+        if (!usuarioRet) {
+            return res.status(400).json({
+                status: false,
+                msg: 'No existe el usuario con ese id'
+            });
+        }
+
+        res.json({
+            status: true,
+            usuario: usuarioRet
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            status: true,
+            msg: 'Error durante la busqueda particular del Usuario - Ver logs'
+        });
+    }
+}
+
 module.exports = {
     getUsuarios,
-    crearUsuario,
+    crearUsuarioPorRegister,
+    crearUsuarioPorApp,
     actualizarUsuario,
-    eliminarUsuario
+    inactivarUsuario,
+    buscarUsuarioPorId,
+    reactivarUsuario
 }

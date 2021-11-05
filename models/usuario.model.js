@@ -1,4 +1,4 @@
-const { Schema, model } = require('mongoose');
+const { Schema, model, now } = require('mongoose');
 
 const UsuarioSchema = Schema({
     nombre: { type: String, required: true },
@@ -6,7 +6,9 @@ const UsuarioSchema = Schema({
     password: { type: String, required: true },
     img: { type: String },
     role: { type: String, required: true, default: 'USER_ROLE' },
-    google: { type: Boolean, default: false }
+    google: { type: Boolean, default: false },
+    fechaCreacion: { type: Date, default: Date.now },
+    estado: { type: String, required: [true, 'El estado es necesario'], default: 'CREADO' }
 });
 
 // Esto { __v, ...object }
