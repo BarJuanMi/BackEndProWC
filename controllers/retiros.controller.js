@@ -4,7 +4,7 @@ const Modelo = require('../models/modelo.model');
 const { addHoursDate } = require('../helpers/formateadores');
 
 /**
- * Operación para obtener todos los usuarios usando el desde como 
+ * Operación para obtener todos los retiros usando el desde como 
  * condicion inical de busqueda hasta el final de la coleccion.
  * @param {*} req Objeto con el payload para la peticion
  * @param {*} res Objeto con la data de retorno seguen la peticion
@@ -51,8 +51,6 @@ const crearRetiro = async(req, res = response) => {
         retiroNew.fechaRenuncia = addHoursDate(req.body.fechaRenuncia)
 
         const retiroRet = await retiroNew.save();
-
-        console.log('------>' + idModelo);
 
         const modeloInactivado = await Modelo.findByIdAndUpdate(idModelo, { estado: false, fechaInactivacion: new Date() }, { new: true });
 

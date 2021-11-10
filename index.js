@@ -51,6 +51,8 @@ app.use('/api/retiros', require('./routes/retiros.route'));
 app.use('/api/utiles', require('./routes/utiles.route'));
 app.use('/api/vacunados', require('./routes/vacunados.route'));
 
+app.use('/api/pqrs', require('./routes/pqrsincidentes.route'));
+
 app.listen(process.env.PORT, () => {
     console.log('Servidor corriendo en puerto ' + process.env.PORT);
 });
