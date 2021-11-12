@@ -2,7 +2,7 @@ const { response } = require('express');
 const Usuario = require('../models/usuario.model');
 const bcrypt = require('bcryptjs');
 const { generarJWT } = require('../helpers/jwt');
-const { googleVerify } = require('../helpers/google-verify');
+//const { googleVerify } = require('../helpers/google-verify');
 const { v4: uuidv4 } = require('uuid');
 
 /**
@@ -61,7 +61,7 @@ const login = async(req, res = response) => {
  * @param {*} req 
  * @param {*} res 
  */
-const loginGoogleSignIn = async(req, res = response) => {
+/*const loginGoogleSignIn = async(req, res = response) => {
 
     const googleToken = req.body.token;
     try {
@@ -101,7 +101,7 @@ const loginGoogleSignIn = async(req, res = response) => {
             msg: 'Token de Google Invalido'
         });
     }
-}
+}*/
 
 /**
  * 
@@ -135,6 +135,6 @@ const renewToken = async(req, res = response) => {
 
 module.exports = {
     login,
-    loginGoogleSignIn,
+    //loginGoogleSignIn,
     renewToken
 }
