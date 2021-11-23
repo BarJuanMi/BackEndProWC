@@ -10,7 +10,8 @@ var pqrsincidenteSchema = new Schema({
     prioridad: { type: String, required: true, default: 'NORMAL' },
     estado: { type: String, required: true, default: 'ABIERTO' },
     fechaOcurrencia: { type: String, required: false },
-    respuestaAsociada: { type: String, required: false },
+    respuestaAsociadaOne: { type: String, required: false },
+    respuestaAsociadaTwo: { type: String, required: false },
     img: { type: String, required: false }
 }, {
     collection: 'pqrsincidentes'
