@@ -122,7 +122,7 @@ const actualizarAdministrativo = async(req, res = response) => {
             });
         }
 
-        const { documento, ...campos } = req.body;
+        const { documento, usuarioCreacion, tipoEmpleado, ...campos } = req.body;
 
         const administrativoActualizado = await Administrativo.findByIdAndUpdate(idAdministrativo, campos, { new: true });
 

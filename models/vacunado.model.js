@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var vacunadoSchema = new Schema({
-    modelo: { type: Schema.Types.ObjectId, ref: 'Modelo' },
+    empleado: { type: Schema.Types.ObjectId, ref: 'Empleado' },
     usuario: { type: Schema.Types.ObjectId, ref: 'Usuario' },
     farmaceutica: { type: String, required: [true, 'La farmaceutica es necesaria'] },
     fechaPriDosis: { type: Date },

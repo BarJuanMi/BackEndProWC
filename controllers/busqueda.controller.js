@@ -4,6 +4,8 @@ const Usuario = require('../models/usuario.model');
 const Medico = require('../models/medico.model');
 const Modelo = require('../models/modelo.model');
 const Monitor = require('../models/monitor.model');
+const Empleado = require('../models/empleado.model');
+const TipoEmpleado = require('../models/tipoempleado.model');
 const Administrativo = require('../models/administrativo.model');
 
 const busquedaTotal = async(req, res = response) => {
@@ -72,7 +74,37 @@ const busquedaPorColeccion = async(req, res = response) => {
     });
 }
 
+const busquedaColeccionEmpleados = async(req, res = response) => {
+    const collection = req.params.col;
+    const argSearch = req.params.arg;
+    const subTipo = String(req.params.sub).toUpperCase();
+    const regex = new RegExp(argSearch, 'i');
+
+    let data = [];
+
+    const tipoEmplId = await TipoEmpleado.find({ tipoEmpleadoDesc: subTipo });
+
+    switch (collection) {
+        case 'empleados':
+            data = await Empleado.find({ nombApellConca: regex, tipoEmpleado: tipoEmplId });
+            break;
+
+        default:
+            return res.status(400).json({
+                status: false,
+                msg: 'No hay resultados para la busqueda'
+            });
+    }
+
+    res.json({
+        status: true,
+        resultados: data
+    });
+}
+
+
 module.exports = {
     busquedaTotal,
-    busquedaPorColeccion
+    busquedaPorColeccion,
+    busquedaColeccionEmpleados
 }

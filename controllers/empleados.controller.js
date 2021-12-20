@@ -44,9 +44,9 @@ const getTipoEmpleados = async(req, res = response) => {
     })
 }
 
-const getEmpleadosxTipo = async(req, res = repsonse) => {
+const getEmpleadosxTipo = async(req, res = response) => {
     const desde = Number(req.query.desde) || 0;
-    const filtroTipo = req.params.filtro;
+    const filtroTipo = String(req.params.filtro).toUpperCase();
 
     const tipoEmplId = await TipoEmpleado.find({ tipoEmpleadoDesc: filtroTipo });
 
@@ -73,6 +73,9 @@ const getEmpleadosxTipo = async(req, res = repsonse) => {
 
 const crearEmpleado = async(req, res = response) => {
     try {
+        const filtroTipo = String(req.params.tipo).toUpperCase();
+        const tipoEmpleado = await TipoEmpleado.findOne({ tipoEmpleadoDesc: filtroTipo });
+
         const uid = req.uid; //Saca el uid (identificador del usuario dentro del token de la peticion)
         const empleadoNew = new Empleado({
             usuarioCreacion: uid,
@@ -82,6 +85,8 @@ const crearEmpleado = async(req, res = response) => {
         empleadoNew.nombres = String(req.body.nombres).toUpperCase();
         empleadoNew.apellidos = String(req.body.apellidos).toUpperCase();
         empleadoNew.telCelular = formatearNumCelular(req.body.telCelular.replace(/\s/g, '')); //Elimina los espacios que pudieran llegar
+        empleadoNew.tipoEmpleado = tipoEmpleado._id;
+        empleadoNew.nombApellConca = String(req.body.nombres).toUpperCase() + ' ' + String(req.body.apellidos).toUpperCase();
 
         const empleadoRet = await empleadoNew.save();
 
@@ -128,10 +133,115 @@ const buscarEmpleadoPorId = async(req, res = response) => {
     }
 }
 
+const inactivarEmpleado = async(req, res = response) => {
+    const idEmpleado = req.params.id;
+    try {
+        const resEmpleadoDB = await Empleado.findById(idEmpleado);
+
+        if (!resEmpleadoDB) {
+            return res.status(400).json({
+                status: false,
+                msg: 'No existe el empleado con ese id'
+            });
+        }
+
+        const empleadoInactivado = await Empleado.findByIdAndUpdate(idEmpleado, { estado: false, fechaInactivacion: new Date() }, { new: true });
+
+        res.json({
+            status: true,
+            empleado: empleadoInactivado
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            status: true,
+            msg: 'Error durante la inactivacion de Empleado - Ver logs'
+        });
+    }
+}
+
+const reactivarEmpleado = async(req, res = response) => {
+    const idEmpleado = req.params.id;
+    try {
+        const resEmpleadoDB = await Empleado.findById(idEmpleado);
+
+        if (!resEmpleadoDB) {
+            return res.status(400).json({
+                status: false,
+                msg: 'No existe el empleado con ese id'
+            });
+        }
+
+        const empleadoReActivado = await Empleado.findByIdAndUpdate(idEmpleado, { estado: true, fechaInactivacion: '' }, { new: true });
+
+        res.json({
+            status: true,
+            modelo: empleadoReActivado
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            status: true,
+            msg: 'Error durante la re activacion del empleado - Ver logs'
+        });
+    }
+}
+
+const actualizarEmpleadoPorId = async(req, res = response) => {
+    const idEmpleado = req.params.id;
+    try {
+        const resEmpleadoDB = await Empleado.findById(idEmpleado);
+        req.body.nombres = String(req.body.nombres).toUpperCase();
+        req.body.apellidos = String(req.body.apellidos).toUpperCase();
+        req.body.nombApellConca = String(req.body.nombres).toUpperCase() + ' ' + String(req.body.apellidos).toUpperCase();
+        console.log(req.body);
+
+        if (!resEmpleadoDB) {
+            return res.status(400).json({
+                status: false,
+                msg: 'No existe el empleado con ese id'
+            });
+        }
+
+        const { documento, usuarioCreacion, ...campos } = req.body;
+
+        const empleadoActualizado = await Empleado.findByIdAndUpdate(idEmpleado, campos, { new: true });
+
+        res.json({
+            status: true,
+            empleado: empleadoActualizado
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            status: true,
+            msg: 'Error durante la inactivacion del empleado - Ver logs'
+        });
+    }
+}
+
+const obtenerEmpleadosPorEstado = async(req, res = response) => {
+    const estado = String(req.query.estado);
+
+    const [empleados] = await Promise.all([
+        Empleado.find({ estado: estado })
+        .sort({ estado: -1, nombres: 1, apellidos: 1 })
+    ]);
+
+    res.json({
+        status: true,
+        empleados
+    })
+}
+
 module.exports = {
     getEmpleados,
     crearEmpleado,
     getTipoEmpleados,
     getEmpleadosxTipo,
-    buscarEmpleadoPorId
+    buscarEmpleadoPorId,
+    reactivarEmpleado,
+    inactivarEmpleado,
+    actualizarEmpleadoPorId,
+    obtenerEmpleadosPorEstado
 }

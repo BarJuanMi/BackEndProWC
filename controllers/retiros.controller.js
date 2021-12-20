@@ -1,6 +1,6 @@
 const { response } = require('express');
 const Retiro = require('../models/retiro.model');
-const Modelo = require('../models/modelo.model');
+const Empleado = require('../models/empleado.model');
 const { addHoursDate } = require('../helpers/formateadores');
 
 /**
@@ -14,10 +14,10 @@ const getRetiros = async(req, res = response) => {
 
     const [retiros, total] = await Promise.all([
         //Promesa 1
-        //Los filtros de los campos a mostrar se controlan desde el modelo
-        Retiro.find({}) //solo me muestra en el resutlado de la consulta las columnas
+        //Los filtros de los campos a mostrar se controlan desde el empleado
+        Retiro.find({}) //solo me muestra en el resultado de la consulta las columnas
         .skip(desde)
-        .populate('modelo', 'documento nombres apellidos')
+        .populate('empleado', 'documento nombApellConca')
         .populate('usuarioCreacion', 'nombre')
         .populate('usuarioCargoPDF', 'nombre')
         .sort({ fechaRegistro: -1 })
@@ -41,7 +41,7 @@ const getRetiros = async(req, res = response) => {
  */
 const crearRetiro = async(req, res = response) => {
     try {
-        const idModelo = req.body.modelo;
+        const idEmpleado = req.body.empleado;
 
         const uid = req.uid; //Saca el uid (identificador del usuario dentro del token de la peticion)
         const retiroNew = new Retiro({
@@ -52,12 +52,12 @@ const crearRetiro = async(req, res = response) => {
 
         const retiroRet = await retiroNew.save();
 
-        const modeloInactivado = await Modelo.findByIdAndUpdate(idModelo, { estado: false, fechaInactivacion: new Date() }, { new: true });
+        const empleadoInactivado = await Empleado.findByIdAndUpdate(idEmpleado, { estado: false, fechaInactivacion: new Date() }, { new: true });
 
         res.json({
             status: true,
             retiroRet,
-            modeloInactivado
+            empleadoInactivado
         });
 
     } catch (error) {
@@ -95,7 +95,7 @@ const actualizarRetiro = async(req, res = response) => {
         }
 
         const {
-            modelo,
+            empleado,
             usuarioCreacion,
             motivoRetiro,
             fechaRegistro,
@@ -136,7 +136,7 @@ const buscarRetiroPorId = async(req, res = response) => {
     try {
         const retiroRet = await Retiro
             .findById(idRetiro)
-            .populate('modelo', 'documento nombres apellidos')
+            .populate('empleado', 'documento nombApellConca')
             .populate('usuarioCreacion', 'nombre')
             .populate('usuarioCargoPDF', 'nombre');
 

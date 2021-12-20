@@ -1,7 +1,7 @@
 const { Schema, model } = require('mongoose');
 
 var retiroSchema = new Schema({
-    modelo: { type: Schema.Types.ObjectId, ref: 'Modelo' },
+    empleado: { type: Schema.Types.ObjectId, ref: 'Empleado' },
     usuarioCreacion: { type: Schema.Types.ObjectId, ref: 'Usuario' },
     fechaRenuncia: { type: Date, required: false },
     estado: { type: String, required: [true, 'El estado es necesario'] },
@@ -17,5 +17,6 @@ var retiroSchema = new Schema({
 }, {
     collection: 'retiros'
 });
+
 
 module.exports = model('Retiro', retiroSchema);

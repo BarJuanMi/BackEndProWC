@@ -6,7 +6,7 @@ const getVacunados = async(req, res = response) => {
     const [vacunados, total] = await Promise.all([
         Vacunado.find({})
         .skip(desde)
-        .populate('modelo', 'documento nombres apellidos')
+        .populate('empleado', 'documento nombApellConca')
         .populate('usuario', 'nombre')
         .limit(Number(process.env.LIMIT_QUERY_VACUNADOS)),
 
@@ -29,12 +29,12 @@ const crearRegVacunado = async(req, res = response) => {
             ...req.body
         });
 
-        const resVacuModeloDB = await Vacunado.find({ modelo: req.body.modelo });
+        const resVacuEmpleDB = await Vacunado.find({ empleado: req.body.empleado });
 
-        if (resVacuModeloDB) {
+        if (!resVacuEmpleDB) {
             return res.status(400).json({
                 status: false,
-                msg: 'Ya existe un registro de vacunación para esta modelo.'
+                msg: 'Ya existe un registro de vacunación para este empleado.'
             });
 
         } else {
@@ -85,9 +85,8 @@ const eliminarRegVacunado = async(req, res = response) => {
 
 const crearRegDosis = async(req, res = response) => {
 
-    console.log('LLego a esa mierda' + req.body);
-
     const idRegVacunado = req.params.id;
+
     try {
         const resRegVacDB = await Vacunado.findById(idRegVacunado);
 

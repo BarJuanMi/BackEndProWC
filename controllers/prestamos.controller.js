@@ -14,7 +14,7 @@ const getPrestamos = async(req, res = response) => {
         //Los filtros de los campos a mostrar se controlan desde el modelo
         Prestamo.find({}) //solo me muestra en el resutlado de la consulta las columnas
         .skip(desde)
-        .populate('modelo', 'documento nombres apellidos')
+        .populate('empleado', 'documento nombApellConca')
         .populate('usuario', 'nombre')
         .populate('usuarioActualizacion', 'nombre')
         .sort({ fechaCreacion: -1 })
@@ -45,7 +45,6 @@ const crearPrestamo = async(req, res = response) => {
             usuario: uid,
             ...req.body
         });
-
 
         prestamoNew.estado = 'COBRO PENDIENTE';
         prestamoNew.fechaCreacion = new Date();

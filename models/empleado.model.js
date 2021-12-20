@@ -16,7 +16,8 @@ const EmpleadoSchema = new Schema({
     genero: { type: String, required: true, default: 'F', enum: generoValido },
     nombres: { type: String, required: [true, 'El nombre es necesario'] },
     apellidos: { type: String, required: [true, 'El apellido es necesario'] },
-    tipoEmpleado: { type: Schema.Types.ObjectId, ref: 'Tipoempleado'},
+    nombApellConca: { type: String, required: [true, 'La concatenacion de nombres y apellidos es necesario'] },
+    tipoEmpleado: { type: Schema.Types.ObjectId, ref: 'Tipoempleado' },
     fechaNac: { type: Date, required: [true, 'La fecha de nacimiento es necesaria'] },
     direccion: { type: String, required: [true, 'La direccion de residencia es necesaria'] },
     emailCorporativo: { type: String, required: [true, 'La direccion de email es necesaria'] },
@@ -37,7 +38,7 @@ const EmpleadoSchema = new Schema({
     fechaCreacionApp: { type: Date, default: Date.now },
     usuarioCreacion: { type: Schema.Types.ObjectId, ref: 'Usuario' },
     epsSalud: { type: String, required: true },
-    arlTrabajo: {type: String, required: true},
+    arlTrabajo: { type: String, required: true },
 }, {
     collection: 'empleados'
 });
