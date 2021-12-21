@@ -1,5 +1,6 @@
 const { response } = require('express');
 const Vacunado = require('../models/vacunado.model');
+const Empleado = require('../models/empleado.model');
 
 const getVacunados = async(req, res = response) => {
     const desde = Number(req.query.desde) || 0;
@@ -29,9 +30,10 @@ const crearRegVacunado = async(req, res = response) => {
             ...req.body
         });
 
-        const resVacuEmpleDB = await Vacunado.find({ empleado: req.body.empleado });
+        const empleadoRet = await Empleado.findById(req.body.empleado);
+        const resVacuEmpleDB = await Vacunado.find({ empleado: empleadoRet });
 
-        if (!resVacuEmpleDB) {
+        if (resVacuEmpleDB[0]) {
             return res.status(400).json({
                 status: false,
                 msg: 'Ya existe un registro de vacunación para este empleado.'
@@ -85,6 +87,8 @@ const eliminarRegVacunado = async(req, res = response) => {
 
 const crearRegDosis = async(req, res = response) => {
 
+    console.log(req.body);
+
     const idRegVacunado = req.params.id;
 
     try {
@@ -99,19 +103,20 @@ const crearRegDosis = async(req, res = response) => {
 
         const fechaDosis = req.body.fechaDosis;
         const numeroDosis = req.body.numDosis;
+        const farmaDosis = req.body.farmaDosis;
         var regVacActualizado = '';
 
         switch (numeroDosis) {
-            case '2daDosis':
-                regVacActualizado = await Vacunado.findByIdAndUpdate(idRegVacunado, { fechaSecDosis: fechaDosis }, { new: true });
+            case '2':
+                regVacActualizado = await Vacunado.findByIdAndUpdate(idRegVacunado, { fechaSecDosis: fechaDosis, farmaSecDosis: farmaDosis }, { new: true });
                 break;
 
-            case '3raDosis':
-                regVacActualizado = await Vacunado.findByIdAndUpdate(idRegVacunado, { fechaTerDosis: fechaDosis }, { new: true });
+            case '3':
+                regVacActualizado = await Vacunado.findByIdAndUpdate(idRegVacunado, { fechaTerDosis: fechaDosis, farmaTerDosis: farmaDosis }, { new: true });
                 break;
 
-            case '4taDosis':
-                regVacActualizado = await Vacunado.findByIdAndUpdate(idRegVacunado, { fechaCuarDosis: fechaDosis }, { new: true });
+            case '4':
+                regVacActualizado = await Vacunado.findByIdAndUpdate(idRegVacunado, { fechaCuarDosis: fechaDosis, farmaCuarDosis: farmaDosis }, { new: true });
                 break;
         }
 

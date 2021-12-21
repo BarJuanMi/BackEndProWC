@@ -4,8 +4,11 @@ var Schema = mongoose.Schema;
 var vacunadoSchema = new Schema({
     empleado: { type: Schema.Types.ObjectId, ref: 'Empleado' },
     usuario: { type: Schema.Types.ObjectId, ref: 'Usuario' },
-    farmaceutica: { type: String, required: [true, 'La farmaceutica es necesaria'] },
-    fechaPriDosis: { type: Date },
+    farmaPriDosis: { type: String, required: false },
+    farmaSecDosis: { type: String, required: false },
+    farmaTerDosis: { type: String, required: false },
+    farmaCuarDosis: { type: String, required: false },
+    fechaPriDosis: { type: Date, required: false},
     fechaSecDosis: { type: Date, required: false },
     fechaTerDosis: { type: Date, required: false },
     fechaCuarDosis: { type: Date, required: false },
