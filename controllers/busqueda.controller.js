@@ -2,11 +2,9 @@ const { response } = require('express');
 const Hospital = require('../models/hospital.model');
 const Usuario = require('../models/usuario.model');
 const Medico = require('../models/medico.model');
-const Modelo = require('../models/modelo.model');
-const Monitor = require('../models/monitor.model');
 const Empleado = require('../models/empleado.model');
 const TipoEmpleado = require('../models/tipoempleado.model');
-const Administrativo = require('../models/administrativo.model');
+const Aspirante = require('../models/aspirante.model');
 
 const busquedaTotal = async(req, res = response) => {
 
@@ -49,16 +47,11 @@ const busquedaPorColeccion = async(req, res = response) => {
             data = await Hospital.find({ nombre: regex });
             break;
 
-        case 'modelos':
-            data = await Modelo.find({ nombres: regex });
-            break;
-
-        case 'monitores':
-            data = await Monitor.find({ nombres: regex });
-            break;
-
-        case 'administrativos':
-            data = await Administrativo.find({ nombres: regex });
+        case 'aspirantes':
+            data = await Aspirante.find({ nombApellAspConcat: regex })
+                .populate('usuarioCreacion', 'nombre')
+                .populate('cargoAspirante', 'cargoId cargoDesc')
+                .sort({ fechaRegistro: -1 });
             break;
 
         default:
@@ -82,10 +75,9 @@ const busquedaColeccionEmpleados = async(req, res = response) => {
 
     let data = [];
 
-    const tipoEmplId = await TipoEmpleado.find({ tipoEmpleadoDesc: subTipo });
-
     switch (collection) {
         case 'empleados':
+            const tipoEmplId = await TipoEmpleado.find({ tipoEmpleadoDesc: subTipo });
             data = await Empleado.find({ nombApellConca: regex, tipoEmpleado: tipoEmplId });
             break;
 
@@ -101,7 +93,6 @@ const busquedaColeccionEmpleados = async(req, res = response) => {
         resultados: data
     });
 }
-
 
 module.exports = {
     busquedaTotal,
