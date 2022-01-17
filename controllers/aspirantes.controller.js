@@ -51,7 +51,7 @@ const crearRegAspirante = async(req, res = response) => {
         aspiranteNew.nombres = String(req.body.nombres).toUpperCase();
         aspiranteNew.apellidos = String(req.body.apellidos).toUpperCase();
         aspiranteNew.numCelular = formatearNumCelular(req.body.telCelular.replace(/\s/g, '')); //Elimina los espacios que pudieran llegar
-        aspiranteNew.estado = 'REGISTRADO';
+        aspiranteNew.estado = 'Registrado';
         aspiranteNew.nombApellAspConcat = String(req.body.nombres).toUpperCase() + ' ' + String(req.body.apellidos).toUpperCase();
 
         const aspiranteRet = await aspiranteNew.save();
@@ -79,9 +79,11 @@ const buscarAspirantePorId = async(req, res = response) => {
     const idAspirante = req.params.id;
 
     try {
-        const aspiranteRet = await Retiro
+        const aspiranteRet = await Aspirante
             .findById(idAspirante)
-            .populate('usuarioCreacion', 'nombre');
+            .populate('usuarioCreacion', 'nombre')
+            .populate('localidad', 'localidadName')
+            .populate('cargoAspirante', 'cargoId cargoDesc');
 
         if (!aspiranteRet) {
             return res.status(400).json({

@@ -90,10 +90,10 @@ const crearRegDosis = async(req, res = response) => {
     console.log(req.body);
 
     const idRegVacunado = req.params.id;
+    let aprueba = false;
 
     try {
         const resRegVacDB = await Vacunado.findById(idRegVacunado);
-
         if (!resRegVacDB) {
             return res.status(400).json({
                 status: false,
@@ -108,22 +108,41 @@ const crearRegDosis = async(req, res = response) => {
 
         switch (numeroDosis) {
             case '2':
-                regVacActualizado = await Vacunado.findByIdAndUpdate(idRegVacunado, { fechaSecDosis: fechaDosis, farmaSecDosis: farmaDosis }, { new: true });
+                if (!resRegVacDB.farmaSecDosis) {
+                    regVacActualizado = await Vacunado.findByIdAndUpdate(idRegVacunado, { fechaSecDosis: fechaDosis, farmaSecDosis: farmaDosis }, { new: true });
+                    aprueba = true;
+                }
                 break;
 
             case '3':
-                regVacActualizado = await Vacunado.findByIdAndUpdate(idRegVacunado, { fechaTerDosis: fechaDosis, farmaTerDosis: farmaDosis }, { new: true });
+                if (!resRegVacDB.farmaTerDosis) {
+                    regVacActualizado = await Vacunado.findByIdAndUpdate(idRegVacunado, { fechaTerDosis: fechaDosis, farmaTerDosis: farmaDosis }, { new: true });
+                    aprueba = true;
+                }
                 break;
 
             case '4':
-                regVacActualizado = await Vacunado.findByIdAndUpdate(idRegVacunado, { fechaCuarDosis: fechaDosis, farmaCuarDosis: farmaDosis }, { new: true });
+                if (!resRegVacDB.farmaCuarDosis) {
+                    regVacActualizado = await Vacunado.findByIdAndUpdate(idRegVacunado, { fechaCuarDosis: fechaDosis, farmaCuarDosis: farmaDosis }, { new: true });
+                    aprueba = true;
+                }
                 break;
         }
 
-        res.json({
-            status: true,
-            vacunado: regVacActualizado
-        });
+        if (aprueba) {
+            res.json({
+                status: true,
+                vacunado: regVacActualizado,
+                msg: 'Creacion del registro de nueva dosis de forma satisfactoria.'
+            });
+        } else {
+            res.json({
+                status: false,
+                vacunado: regVacActualizado,
+                msg: 'Error, Ya existia un registro para ese número de dosis.'
+            });
+        }
+
 
     } catch (error) {
         console.log(error);
