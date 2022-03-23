@@ -2,7 +2,7 @@
     Ruta: /api/utiles
 */
 const { Router } = require('express');
-const { getCiudades, getPaises, getTipoPQRS, getCargosAspirante, getLocalidadesCiudad } = require('../controllers/utiles.controller');
+const { getCiudades, getPaises, getCargosAspirante, getLocalidadesCiudad, getSedes, getTipoPQRS } = require('../controllers/utiles.controller');
 
 const router = Router();
 
@@ -10,10 +10,12 @@ router.get('/ciudades', getCiudades);
 
 router.get('/paises', getPaises);
 
-router.get('/tipopqrs', getTipoPQRS);
-
 router.get('/cargosaspirante', getCargosAspirante);
 
 router.get('/localidadesciudad', getLocalidadesCiudad);
+
+router.get('/sedes', getSedes);
+
+router.get('/tipopqrs', getTipoPQRS);
 
 module.exports = router;

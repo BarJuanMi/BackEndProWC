@@ -15,7 +15,7 @@ const fileImageUpload = (req, res = response) => {
     const tipo = req.params.tipo;
     const uid = req.params.id;
 
-    const tiposValidos = ['hospitales', 'medicos', 'usuarios', 'modelos', 'monitores', 'administrativos', 'empleados', 'vacunados'];
+    const tiposValidos = ['hospitales', 'medicos', 'usuarios', 'modelos', 'monitores', 'administrativos', 'empleados', 'vacunados', 'servlavanderia'];
     if (!tiposValidos.includes(tipo)) {
         return res.status(400).json({
             status: false,
@@ -67,7 +67,7 @@ const fileImageUpload = (req, res = response) => {
             actualizarImagenMantenimientos(tipo, uid, nombreArch);
         else if (tipo === 'modelos' || tipo === 'monitores' || tipo === 'administrativos' || tipo === 'empleados') {
             actualizarImagenPersonal(tipo, uid, nombreArch);
-        } else if (tipo === 'vacunados') {
+        } else if (tipo === 'vacunados' || tipo === 'servlavanderia') {
             actualizarImagenProcesos(tipo, uid, nombreArch);
         }
 

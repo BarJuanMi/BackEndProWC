@@ -33,6 +33,6 @@ router.put('/inactivarEmpleado/:id', validarJWT, inactivarEmpleado);
 
 router.put('/reActivarEmpleado/:id', validarJWT, reactivarEmpleado);
 
-router.get('/filtro', validarJWT, obtenerEmpleadosPorEstado);
+router.get('/filtro/estado/:estado', validarJWT, obtenerEmpleadosPorEstado);
 
 module.exports = router;

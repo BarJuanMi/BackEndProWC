@@ -63,7 +63,7 @@ const crearRetiro = async(req, res = response) => {
     } catch (error) {
         console.log(error);
         res.status(500).json({
-            status: true,
+            status: false,
             msg: 'Error durante la creación de Retiro - Ver logs'
         });
     }
@@ -76,6 +76,7 @@ const crearRetiro = async(req, res = response) => {
  */
 const actualizarRetiro = async(req, res = response) => {
     const uid = req.uid;
+
     try {
         const idRetiro = req.params.id;
 
@@ -119,7 +120,7 @@ const actualizarRetiro = async(req, res = response) => {
     } catch (error) {
         console.log(error);
         res.status(500).json({
-            status: true,
+            status: false,
             msg: 'Error durante la actualización del Retiro - Ver logs'
         });
     }
@@ -154,7 +155,7 @@ const buscarRetiroPorId = async(req, res = response) => {
     } catch (error) {
         console.log(error);
         res.status(500).json({
-            status: true,
+            status: false,
             msg: 'Error durante la busqueda particular del retiro - Ver logs'
         });
     }

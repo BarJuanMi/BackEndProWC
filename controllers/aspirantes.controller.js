@@ -40,8 +40,6 @@ const getRegAspirantes = async(req, res = response) => {
  */
 const crearRegAspirante = async(req, res = response) => {
     try {
-        console.log(JSON.stringify(req.body));
-
         const uid = req.uid; //Saca el uid (identificador del usuario dentro del token de la peticion)
         const aspiranteNew = new Aspirante({
             usuarioCreacion: uid,

@@ -3,11 +3,9 @@ const fs = require('fs');
 const Hospital = require('../models/hospital.model');
 const Usuario = require('../models/usuario.model');
 const Medico = require('../models/medico.model');
-const Modelo = require('../models/modelo.model');
-const Monitor = require('../models/monitor.model');
 const Empleado = require('../models/empleado.model');
 const Vacunado = require('../models/vacunado.model');
-const Administrativo = require('../models/administrativo.model');
+const ServLavanderia = require('../models/servlavanderia.model');
 
 const borrarImagen = (antiguoPath) => {
     //console.log('antiguoPath ' + antiguoPath);
@@ -63,67 +61,23 @@ const actualizarImagenMantenimientos = async(tipo, id, nombreArch) => {
             await usuario.save();
             return true;
             break;
-
-
     }
 }
 
 const actualizarImagenPersonal = async(tipo, id, nombreArch) => {
     let antiguoPath = '';
 
-    switch (tipo) {
-        case 'modelos':
-            const modelo = await Modelo.findById(id);
-            if (!modelo) {
-                return false;
-            }
-            antiguoPath = `./uploads/${tipo}/${modelo.img}`;
-            borrarImagen(antiguoPath);
-
-            modelo.img = nombreArch;
-            await modelo.save();
-            return true;
-            break;
-
-        case 'monitores':
-            const monitor = await Monitor.findById(id);
-            if (!monitor) {
-                return false;
-            }
-            antiguoPath = `./uploads/${tipo}/${monitor.img}`;
-            borrarImagen(antiguoPath);
-
-            monitor.img = nombreArch;
-            await monitor.save();
-            return true;
-            break;
-
-        case 'empleados':
-            const empleado = await Empleado.findById(id);
-            if (!empleado) {
-                return false;
-            }
-            antiguoPath = `./uploads/${tipo}/${empleado.img}`;
-            borrarImagen(antiguoPath);
-
-            empleado.img = nombreArch;
-            await empleado.save();
-            return true;
-            break;
-
-        case 'administrativos':
-            const administrativo = await Administrativo.findById(id);
-            if (!administrativo) {
-                return false;
-            }
-            antiguoPath = `./uploads/${tipo}/${administrativo.img}`;
-            borrarImagen(antiguoPath);
-
-            administrativo.img = nombreArch;
-            await administrativo.save();
-            return true;
-            break;
+    const empleado = await Empleado.findById(id);
+    if (!empleado) {
+        return false;
     }
+    antiguoPath = `./uploads/${tipo}/${empleado.img}`;
+    borrarImagen(antiguoPath);
+
+    empleado.img = nombreArch;
+    await empleado.save();
+    return true;
+
 }
 
 const actualizarImagenProcesos = async(tipo, id, nombreArch) => {
@@ -140,6 +94,19 @@ const actualizarImagenProcesos = async(tipo, id, nombreArch) => {
 
             vacunado.img = nombreArch;
             await vacunado.save();
+            return true;
+            break;
+
+        case 'servlavanderia':
+            const servlavanderia = await ServLavanderia.findById(id);
+            if (!servlavanderia) {
+                return false;
+            }
+            antiguoPath = `./uploads/${tipo}/${servlavanderia.img}`;
+            borrarImagen(antiguoPath);
+
+            servlavanderia.img = nombreArch;
+            await servlavanderia.save();
             return true;
             break;
     }

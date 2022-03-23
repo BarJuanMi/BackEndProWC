@@ -4,6 +4,7 @@ const TipoEmpleado = require('../models/tipoempleado.model');
 const { formatearNumCelular } = require('../helpers/formateadores');
 
 const getEmpleados = async(req, res = response) => {
+
     const desde = Number(req.query.desde) || 0;
     const [empleados, total] = await Promise.all([
 
@@ -111,7 +112,8 @@ const buscarEmpleadoPorId = async(req, res = response) => {
         const empleadoRet = await Empleado.findById(idEmpleado)
             .populate('nacionalidad', 'countryName')
             .populate('ciudadResidencia', 'ciudadName')
-            .populate('usuarioCreacion', 'nombre');
+            .populate('usuarioCreacion', 'nombre')
+            .populate('tipoEmpleado', 'tipoEmpleadoDesc');
 
         if (!empleadoRet) {
             return res.status(400).json({
@@ -194,7 +196,6 @@ const actualizarEmpleadoPorId = async(req, res = response) => {
         req.body.nombres = String(req.body.nombres).toUpperCase();
         req.body.apellidos = String(req.body.apellidos).toUpperCase();
         req.body.nombApellConca = String(req.body.nombres).toUpperCase() + ' ' + String(req.body.apellidos).toUpperCase();
-        console.log(req.body);
 
         if (!resEmpleadoDB) {
             return res.status(400).json({
@@ -221,10 +222,14 @@ const actualizarEmpleadoPorId = async(req, res = response) => {
 }
 
 const obtenerEmpleadosPorEstado = async(req, res = response) => {
-    const estado = String(req.query.estado);
+    const estado = Boolean(req.params.estado);
 
     const [empleados] = await Promise.all([
         Empleado.find({ estado: estado })
+        .populate('nacionalidad', 'countryName')
+        .populate('ciudadResidencia', 'ciudadName')
+        .populate('usuarioCreacion', 'nombre')
+        .populate('tipoEmpleado', 'tipoEmpleadoDesc')
         .sort({ estado: -1, nombres: 1, apellidos: 1 })
     ]);
 
