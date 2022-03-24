@@ -3,7 +3,7 @@ require('dotenv').config();
 const express = require('express');
 const { dbConnection } = require('./database/config');
 const cors = require('cors');
-const docs = require('./docs');
+//const docs = require('./docs');
 const swaggerUI = require("swagger-ui-express");
 
 //Crear el servidor de express
@@ -29,7 +29,7 @@ app.use((req, res, next) => {
 app.use(express.json());
 
 //Aplicacion de logger
-app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(docs));
+//app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(docs));
 
 //Conexion a Base de datos
 dbConnection();
