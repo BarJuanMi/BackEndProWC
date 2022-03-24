@@ -126,7 +126,6 @@ const obtenerPQRSFiltradas = async(req, res = response) => {
     const desde = Number(req.query.desde) || 0; // comienza a paginar desde el registro 15 en adelante, recordar que le numeracion comienza en 0
 
     try {
-        console.log(req.body);
 
         const tipoPQRSFil = await TipoPQRS.findById(req.body.tipo);
         const sedeFil = await Sede.findById(req.body.sede);
@@ -171,9 +170,89 @@ const obtenerPQRSFiltradas = async(req, res = response) => {
     }
 }
 
+/**
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ * @returns 
+ */
+const eliminarPQRS = async(req, res = response) => {
+    const idPQRS = req.params.id;
+
+    try {
+        const resPQRSDB = await PQRSIncidente.findById(idPQRS);
+
+        if (!resPQRSDB) {
+            return res.status(400).json({
+                status: false,
+                msg: 'No existe el prestamo con ese id'
+            });
+        }
+
+        const pqrsEliminado = await PQRSIncidente.findByIdAndDelete(idPQRS);
+
+        res.json({
+            status: true,
+            msg: 'PQRS eliminado correctamente',
+            prestamo: pqrsEliminado
+        });
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            status: false,
+            msg: 'Error durante la eliminacion del PQRS - Ver logs'
+        });
+    }
+}
+
+const actualizarPQRS = async(req, res = response) => {
+    const uid = req.uid;
+
+    try {
+        const idPQRS = req.params.id;
+
+        const resPQRSDB = await PQRSIncidente.findById(idPQRS);
+
+        if (!resPQRSDB) {
+            return res.status(400).json({
+                status: false,
+                msg: 'No existe el registro de servicio de lavanderia con ese id'
+            });
+        }
+
+        let regActuaPQRS = {
+            estado: req.body.estado,
+            prioridad: req.body.prioridad,
+        }
+
+        if (resPQRSDB.respuestaAsociadaOne === '-') {
+            regActuaPQRS = {...regActuaPQRS, respuestaAsociadaOne: req.body.respuesta };
+        } else if (resPQRSDB.respuestaAsociadaTwo === '-') {
+            regActuaPQRS = {...regActuaPQRS, respuestaAsociadaTwo: req.body.respuesta };
+        }
+
+        const regPQRSActualizado = await PQRSIncidente.findByIdAndUpdate(idPQRS, regActuaPQRS, { new: true });
+
+        res.json({
+            status: true,
+            retiro: regPQRSActualizado
+        });
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            status: false,
+            msg: 'Error durante la actualización del servicio de lavanderia - Ver logs'
+        });
+    }
+}
+
 module.exports = {
     obtenerPQRS,
     obtenerPQRSPorId,
     crearPQRS,
-    obtenerPQRSFiltradas
+    obtenerPQRSFiltradas,
+    eliminarPQRS,
+    actualizarPQRS
 }
