@@ -6,6 +6,7 @@ const Medico = require('../models/medico.model');
 const Empleado = require('../models/empleado.model');
 const Vacunado = require('../models/vacunado.model');
 const ServLavanderia = require('../models/servlavanderia.model');
+const PQRSIncidente = require('../models/pqrsincidente.model');
 
 const borrarImagen = (antiguoPath) => {
     //console.log('antiguoPath ' + antiguoPath);
@@ -107,6 +108,18 @@ const actualizarImagenProcesos = async(tipo, id, nombreArch) => {
 
             servlavanderia.img = nombreArch;
             await servlavanderia.save();
+            return true;
+            break;
+        case 'pqrs':
+            const pqrs = await PQRSIncidente.findById(id);
+            if (!pqrs) {
+                return false;
+            }
+            antiguoPath = `./uploads/${tipo}/${pqrs.img}`;
+            borrarImagen(antiguoPath);
+
+            pqrs.img = nombreArch;
+            await pqrs.save();
             return true;
             break;
     }

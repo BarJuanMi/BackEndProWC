@@ -73,9 +73,15 @@ const getEmpleadosxTipo = async(req, res = response) => {
 }
 
 const crearEmpleado = async(req, res = response) => {
+
+    console.log(req.params);
+    console.log(req.body);
+
     try {
         const filtroTipo = String(req.params.tipo).toUpperCase();
         const tipoEmpleado = await TipoEmpleado.findOne({ tipoEmpleadoDesc: filtroTipo });
+
+        console.log(tipoEmpleado);
 
         const uid = req.uid; //Saca el uid (identificador del usuario dentro del token de la peticion)
         const empleadoNew = new Empleado({
