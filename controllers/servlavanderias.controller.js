@@ -19,7 +19,7 @@ const getServLavanderias = async(req, res = response) => {
         .populate('usuarioRegistro', 'nombre')
         .populate('sede', 'nombre')
         .sort({ fechaRegistro: -1 })
-        .limit(Number(process.env.LIMIT_QUERY_ASPIRANTES)),
+        .limit(Number(process.env.LIMIT_QUERY_SERVLAVAN)),
 
         ServLavanderia.countDocuments()
     ]);

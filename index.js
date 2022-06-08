@@ -56,7 +56,7 @@ app.use('/api/pqrs', require('./routes/pqrsincidentes.route'));
 app.use('/api/lavanderias', require('./routes/servlavanderias.route'));
 
 app.use('/api/utiles', require('./routes/utiles.route'));
-//app.use('/api/sedes', require('./routes/sedes.route'));
+app.use('/api/ausentismos', require('./routes/ausentismos.route'));
 
 app.listen(process.env.PORT, () => {
     console.log('Servidor corriendo en puerto ' + process.env.PORT);

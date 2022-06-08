@@ -5,7 +5,7 @@ const Tipopqrs = require('../models/tipopqrs.model');
 const CargoAspirante = require('../models/cargoaspirante.model');
 const Localidad = require('../models/localidadesciudad.model');
 const Sede = require('../models/sede.model');
-const Usuario = require('../models/usuario.model');
+const TipoAusentismo = require('../models/tipoausentismo.model');
 
 const getCiudades = async(req, res = response) => {
     const [ciudades] = await Promise.all([
@@ -43,7 +43,7 @@ const getCargosAspirante = async(req, res = response) => {
 const getLocalidadesCiudad = async(req, res = response) => {
     const [localidades] = await Promise.all([
         Localidad.find({}).sort({ localidadName: 1 })
-    ])
+    ]);
 
     res.json({
         status: true,
@@ -76,11 +76,23 @@ const getTipoPQRS = async(req, res = response) => {
     })
 }
 
+const getTipoAusentismo = async(req, res = response) => {
+    const [tipoausentismos] = await Promise.all([
+        TipoAusentismo.find({}).sort({ tipoausentismoId: 1 })
+    ]);
+
+    res.json({
+        status: true,
+        tipoausentismos
+    })
+}
+
 module.exports = {
     getCiudades,
     getPaises,
     getCargosAspirante,
     getLocalidadesCiudad,
     getSedes,
-    getTipoPQRS
+    getTipoPQRS,
+    getTipoAusentismo
 }
