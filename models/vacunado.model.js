@@ -8,11 +8,12 @@ var vacunadoSchema = new Schema({
     farmaSecDosis: { type: String, required: false },
     farmaTerDosis: { type: String, required: false },
     farmaCuarDosis: { type: String, required: false },
-    fechaPriDosis: { type: Date, required: false},
+    fechaPriDosis: { type: Date, required: false },
     fechaSecDosis: { type: Date, required: false },
     fechaTerDosis: { type: Date, required: false },
     fechaCuarDosis: { type: Date, required: false },
     regulador: { type: String, required: true },
+    sintomatologia: { type: Boolean, default: false },
     img: { type: String, required: false }
 }, {
     collection: 'vacunados'

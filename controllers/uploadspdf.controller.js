@@ -17,7 +17,7 @@ const filePDFUpload = (req, res = response) => {
     const tipo = req.params.tipo;
     const id = req.params.id;
 
-    const tiposValidos = ['pazysalvos', 'respsicologico', 'hojasvida'];
+    const tiposValidos = ['pazysalvos', 'respsicologico', 'hojasvida', 'ausentismos', 'memorandos'];
     if (!tiposValidos.includes(tipo)) {
         return res.status(400).json({
             status: false,

@@ -1,8 +1,16 @@
 const { response } = require('express');
 const Empleado = require('../models/empleado.model');
 const TipoEmpleado = require('../models/tipoempleado.model');
+const Pais = require('../models/pais.model');
+const Ciudad = require('../models/ciudad.model');
+const Usuario = require('../models/usuario.model');
 const { formatearNumCelular } = require('../helpers/formateadores');
 
+/**
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ */
 const getEmpleados = async(req, res = response) => {
 
     const desde = Number(req.query.desde) || 0;
@@ -28,6 +36,11 @@ const getEmpleados = async(req, res = response) => {
     })
 }
 
+/**
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ */
 const getTipoEmpleados = async(req, res = response) => {
     const [tipoempleados, total] = await Promise.all([
 
@@ -45,6 +58,11 @@ const getTipoEmpleados = async(req, res = response) => {
     })
 }
 
+/**
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ */
 const getEmpleadosxTipo = async(req, res = response) => {
     const desde = Number(req.query.desde) || 0;
     const filtroTipo = String(req.params.filtro).toUpperCase();
@@ -72,16 +90,15 @@ const getEmpleadosxTipo = async(req, res = response) => {
     })
 }
 
+/**
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ */
 const crearEmpleado = async(req, res = response) => {
-
-    console.log(req.params);
-    console.log(req.body);
-
     try {
         const filtroTipo = String(req.params.tipo).toUpperCase();
         const tipoEmpleado = await TipoEmpleado.findOne({ tipoEmpleadoDesc: filtroTipo });
-
-        console.log(tipoEmpleado);
 
         const uid = req.uid; //Saca el uid (identificador del usuario dentro del token de la peticion)
         const empleadoNew = new Empleado({
@@ -111,6 +128,12 @@ const crearEmpleado = async(req, res = response) => {
     }
 }
 
+/**
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ * @returns 
+ */
 const buscarEmpleadoPorId = async(req, res = response) => {
     const idEmpleado = req.params.id;
 
@@ -141,8 +164,15 @@ const buscarEmpleadoPorId = async(req, res = response) => {
     }
 }
 
+/**
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ * @returns 
+ */
 const inactivarEmpleado = async(req, res = response) => {
     const idEmpleado = req.params.id;
+
     try {
         const resEmpleadoDB = await Empleado.findById(idEmpleado);
 
@@ -168,6 +198,12 @@ const inactivarEmpleado = async(req, res = response) => {
     }
 }
 
+/**
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ * @returns 
+ */
 const reactivarEmpleado = async(req, res = response) => {
     const idEmpleado = req.params.id;
     try {
@@ -195,6 +231,12 @@ const reactivarEmpleado = async(req, res = response) => {
     }
 }
 
+/**
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ * @returns 
+ */
 const actualizarEmpleadoPorId = async(req, res = response) => {
     const idEmpleado = req.params.id;
     try {
@@ -227,6 +269,11 @@ const actualizarEmpleadoPorId = async(req, res = response) => {
     }
 }
 
+/**
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ */
 const obtenerEmpleadosPorEstado = async(req, res = response) => {
     const estado = Boolean(req.params.estado);
 

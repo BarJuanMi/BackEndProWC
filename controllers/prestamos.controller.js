@@ -78,6 +78,7 @@ const buscarPrestamoPorId = async(req, res = response) => {
         const prestamoRet = await Prestamo
             .findById(idPrestamo)
             .populate('usuario', 'nombre')
+            .populate('empleado', 'documento nombApellConca')
             .populate('usuarioActualizacion', 'nombre');
 
         if (!prestamoRet) {

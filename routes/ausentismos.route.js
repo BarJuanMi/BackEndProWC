@@ -2,14 +2,14 @@
     Ruta: /api/ausentismos
 */
 const { Router } = require('express');
-const { getAusentismos, crearRegAusentismos, buscarRegAusentismoId, actualizarRegAusentismo, eliminarRegAusentismo } = require('../controllers/ausentismos.controller');
+const { getAusentismos, crearRegAusentismo, buscarRegAusentismoId, actualizarRegAusentismo, eliminarRegAusentismo } = require('../controllers/ausentismos.controller');
 const { validarJWT } = require('../middlewares/validar-jwt');
 
 const router = Router();
 
 router.get('/', validarJWT, getAusentismos);
 
-router.post('/crearRegAusentismo', validarJWT, crearRegAusentismos);
+router.post('/crearRegAusentismo', validarJWT, crearRegAusentismo);
 
 router.get('/buscarRegAusentismoId/:id', validarJWT, buscarRegAusentismoId);
 

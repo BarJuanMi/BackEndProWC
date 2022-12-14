@@ -2,7 +2,8 @@ const { Schema, model } = require('mongoose');
 
 var retiroSchema = new Schema({
     empleado: { type: Schema.Types.ObjectId, ref: 'Empleado' },
-    usuarioCreacion: { type: Schema.Types.ObjectId, ref: 'Usuario' },
+    emplNomApel: { type: String, required: false },
+    usuarioRegistro: { type: Schema.Types.ObjectId, ref: 'Usuario' },
     fechaRenuncia: { type: Date, required: false },
     estado: { type: String, required: [true, 'El estado es necesario'] },
     motivoRetiro: { type: String, required: [true, 'El motivo es necesario'] },

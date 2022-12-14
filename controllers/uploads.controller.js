@@ -86,7 +86,6 @@ const fileImageUpload = (req, res = response) => {
  * @param {*} res 
  */
 const fileImageReturn = (req, res = response) => {
-
     const tipo = req.params.tipo;
     const foto = req.params.foto;
 

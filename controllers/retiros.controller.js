@@ -1,11 +1,12 @@
 const { response } = require('express');
 const Retiro = require('../models/retiro.model');
 const Empleado = require('../models/empleado.model');
+const Usuario = require('../models/usuario.model');
 const { addHoursDate } = require('../helpers/formateadores');
 
 /**
  * Operación para obtener todos los retiros usando el desde como 
- * condicion inical de busqueda hasta el final de la coleccion.
+ * condicion inicial de busqueda hasta el final de la coleccion.
  * @param {*} req Objeto con el payload para la peticion
  * @param {*} res Objeto con la data de retorno seguen la peticion
  */
@@ -18,10 +19,10 @@ const getRetiros = async(req, res = response) => {
         Retiro.find({}) //solo me muestra en el resultado de la consulta las columnas
         .skip(desde)
         .populate('empleado', 'documento nombApellConca')
-        .populate('usuarioCreacion', 'nombre')
+        .populate('usuarioRegistro', 'nombre')
         .populate('usuarioCargoPDF', 'nombre')
         .sort({ fechaRegistro: -1 })
-        .limit(Number(process.env.LIMIT_QUERY_RETIRO)),
+        .limit(Number(process.env.LIMIT_QUERY_RETIROS)),
 
         //Promesa 2
         Retiro.countDocuments()
@@ -44,15 +45,17 @@ const crearRetiro = async(req, res = response) => {
         const idEmpleado = req.body.empleado;
 
         const uid = req.uid; //Saca el uid (identificador del usuario dentro del token de la peticion)
-        const retiroNew = new Retiro({
-            usuarioCreacion: uid,
-            ...req.body
-        });
-        retiroNew.fechaRenuncia = addHoursDate(req.body.fechaRenuncia)
-
-        const retiroRet = await retiroNew.save();
 
         const empleadoInactivado = await Empleado.findByIdAndUpdate(idEmpleado, { estado: false, fechaInactivacion: new Date() }, { new: true });
+
+        const retiroNew = new Retiro({
+            usuarioRegistro: uid,
+            ...req.body
+        });
+
+        retiroNew.fechaRenuncia = addHoursDate(req.body.fechaRenuncia);
+        retiroNew.emplNomApel = String(empleadoInactivado.nombres).toUpperCase() + ' ' + String(empleadoInactivado.apellidos).toUpperCase();
+        const retiroRet = await retiroNew.save();
 
         res.json({
             status: true,
@@ -65,6 +68,41 @@ const crearRetiro = async(req, res = response) => {
         res.status(500).json({
             status: false,
             msg: 'Error durante la creación de Retiro - Ver logs'
+        });
+    }
+}
+
+/**
+ * Operación para obtener un retiro mediante su ID dentro del sistema
+ * @param {*} req Objeto con el payload para la peticion
+ * @param {*} res Objeto con la data de retorno seguen la peticion
+ */
+const buscarRetiroPorId = async(req, res = response) => {
+    const idRetiro = req.params.id;
+
+    try {
+        const retiroRet = await Retiro
+            .findById(idRetiro)
+            .populate('empleado', 'documento nombApellConca')
+            .populate('usuarioRegistro', 'nombre')
+            .populate('usuarioCargoPDF', 'nombre');
+
+        if (!retiroRet) {
+            return res.status(400).json({
+                status: false,
+                msg: 'No existe el retiro con ese id'
+            });
+        }
+
+        res.json({
+            status: true,
+            retiro: retiroRet
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            status: false,
+            msg: 'Error durante la busqueda particular del retiro - Ver logs'
         });
     }
 }
@@ -97,7 +135,7 @@ const actualizarRetiro = async(req, res = response) => {
 
         const {
             empleado,
-            usuarioCreacion,
+            usuarioRegistro,
             motivoRetiro,
             fechaRegistro,
             encuesta,
@@ -122,41 +160,6 @@ const actualizarRetiro = async(req, res = response) => {
         res.status(500).json({
             status: false,
             msg: 'Error durante la actualización del Retiro - Ver logs'
-        });
-    }
-}
-
-/**
- * Operación para obtener un retiro mediante su ID dentro del sistema
- * @param {*} req Objeto con el payload para la peticion
- * @param {*} res Objeto con la data de retorno seguen la peticion
- */
-const buscarRetiroPorId = async(req, res = response) => {
-    const idRetiro = req.params.id;
-
-    try {
-        const retiroRet = await Retiro
-            .findById(idRetiro)
-            .populate('empleado', 'documento nombApellConca')
-            .populate('usuarioCreacion', 'nombre')
-            .populate('usuarioCargoPDF', 'nombre');
-
-        if (!retiroRet) {
-            return res.status(400).json({
-                status: false,
-                msg: 'No existe el retiro con ese id'
-            });
-        }
-
-        res.json({
-            status: true,
-            retiro: retiroRet
-        });
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({
-            status: false,
-            msg: 'Error durante la busqueda particular del retiro - Ver logs'
         });
     }
 }

@@ -43,20 +43,19 @@ app.use('/api/login', require('./routes/auth.route'));
 app.use('/api/hospitales', require('./routes/hospitales.route'));
 app.use('/api/medicos', require('./routes/medicos.route'));
 app.use('/api/busqueda', require('./routes/busqueda.route'));
+app.use('/api/utiles', require('./routes/utiles.route'));
 app.use('/api/files/uploads', require('./routes/uploads.route'));
 app.use('/api/files/uploadspdf', require('./routes/uploadspdf.route'));
-
-app.use('/api/empleados', require('./routes/empleados.route'));
-app.use('/api/aspirantes', require('./routes/aspirantes.route'));
-
 app.use('/api/prestamos', require('./routes/prestamos.route'));
-app.use('/api/retiros', require('./routes/retiros.route'));
 app.use('/api/vacunados', require('./routes/vacunados.route'));
 app.use('/api/pqrs', require('./routes/pqrsincidentes.route'));
 app.use('/api/lavanderias', require('./routes/servlavanderias.route'));
-
-app.use('/api/utiles', require('./routes/utiles.route'));
+app.use('/api/empleados', require('./routes/empleados.route'));
+app.use('/api/aspirantes', require('./routes/aspirantes.route'));
+app.use('/api/retiros', require('./routes/retiros.route'));
 app.use('/api/ausentismos', require('./routes/ausentismos.route'));
+app.use('/api/memorandos', require('./routes/memorandos.route'));
+app.use('/api/contratos', require('./routes/contratos.route'));
 
 app.listen(process.env.PORT, () => {
     console.log('Servidor corriendo en puerto ' + process.env.PORT);

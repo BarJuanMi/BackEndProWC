@@ -2,6 +2,11 @@ const { response } = require('express');
 const Vacunado = require('../models/vacunado.model');
 const Empleado = require('../models/empleado.model');
 
+/**
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ */
 const getVacunados = async(req, res = response) => {
     const desde = Number(req.query.desde) || 0;
     const [vacunados, total] = await Promise.all([
@@ -22,6 +27,12 @@ const getVacunados = async(req, res = response) => {
     })
 }
 
+/**
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ * @returns 
+ */
 const crearRegVacunado = async(req, res = response) => {
     try {
         const uid = req.uid;
@@ -56,6 +67,12 @@ const crearRegVacunado = async(req, res = response) => {
     }
 }
 
+/**
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ * @returns 
+ */
 const eliminarRegVacunado = async(req, res = response) => {
     const idRegVacunado = req.params.id;
     try {
@@ -85,6 +102,12 @@ const eliminarRegVacunado = async(req, res = response) => {
     }
 }
 
+/**
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ * @returns 
+ */
 const crearRegDosis = async(req, res = response) => {
 
     console.log(req.body);

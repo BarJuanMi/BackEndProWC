@@ -1,11 +1,15 @@
 const { response } = require('express');
 const Ausentismo = require('../models/ausentismo.model');
+const TipoAusentismo = require('../models/tipoausentismo.model');
 const Empleado = require('../models/empleado.model');
+const Usuario = require('../models/usuario.model');
+const { addHoursDate } = require('../helpers/formateadores');
 
 /**
- * 
- * @param {*} req 
- * @param {*} res 
+ * Operación para obtener todos los ausentismos usando el desde como 
+ * condicion inicial de busqueda hasta el final de la coleccion.
+ * @param {*} req Objeto con el payload para la peticion
+ * @param {*} res Objeto con la data de retorno seguen la peticion
  */
 const getAusentismos = async(req, res = response) => {
 
@@ -17,9 +21,9 @@ const getAusentismos = async(req, res = response) => {
         .skip(desde)
         .populate('empleado', 'documento nombApellConca')
         .populate('usuarioRegistro', 'nombre')
-        .populate('usuarioActualiza', 'nombre')
-        .populate('tipo', 'tipoausentismoDesc')
-        .sort({ fechaCreacion: -1 })
+        .populate('usuarioAprobRecha', 'nombre')
+        .populate('tipoAusentismo', 'tipoausentismoDesc')
+        .sort({ fechaRegistro: -1 })
         .limit(Number(process.env.LIMIT_QUERY_AUSENTISMOS)),
 
         //Promesa 2
@@ -34,11 +38,11 @@ const getAusentismos = async(req, res = response) => {
 }
 
 /**
- * 
- * @param {*} req 
- * @param {*} res 
+ * Operación para crear un nuevo ausentismo dentro del sistema
+ * @param {*} req Objeto con el payload para la peticion
+ * @param {*} res Objeto con la data de retorno seguen la peticion
  */
-const crearRegAusentismos = async(req, res = response) => {
+const crearRegAusentismo = async(req, res = response) => {
 
     try {
         const uid = req.uid; //Saca el uid (identificador del usuario dentro del token de la peticion)
@@ -51,8 +55,17 @@ const crearRegAusentismos = async(req, res = response) => {
 
         const idEmpleadoDB = await Empleado.findById(req.body.empleado);
 
-        ausentismoNew.estado = 'CREADO / CARGADO';
-        ausentismoNew.emplNomApel = idEmpleadoDB.nombres + ' ' + idEmpleadoDB.apellidos;
+        const tipoAusentismo = await TipoAusentismo.findById(req.body.tipo);
+
+        ausentismoNew.estado = 'CREADO SIN SOPORTE';
+        ausentismoNew.fechaInicio = addHoursDate(req.body.fechaInicio);
+        ausentismoNew.fechaFinalizacion = addHoursDate(req.body.fechaFinalizacion);
+        ausentismoNew.emplNomApel = String(idEmpleadoDB.nombres).toUpperCase() + ' ' + String(idEmpleadoDB.apellidos).toUpperCase();
+        ausentismoNew.tipoAusentismo = tipoAusentismo._id;
+
+        if (ausentismoNew.fechaFinalizacion < ausentismoNew.fechaInicio) {
+            ausentismoNew.fechaFinalizacion = ausentismoNew.fechaInicio;
+        }
 
         const ausentismoRet = await ausentismoNew.save();
 
@@ -64,17 +77,16 @@ const crearRegAusentismos = async(req, res = response) => {
     } catch (error) {
         console.log(error);
         res.status(500).json({
-            status: true,
+            status: false,
             msg: 'Error durante la creación del registro de ausentismo - Ver logs'
         });
     }
 }
 
 /**
- * 
- * @param {*} req 
- * @param {*} res 
- * @returns 
+ * Operación para obtener un ausentismo mediante su ID dentro del sistema
+ * @param {*} req Objeto con el payload para la peticion
+ * @param {*} res Objeto con la data de retorno seguen la peticion
  */
 const buscarRegAusentismoId = async(req, res = response) => {
 
@@ -82,8 +94,11 @@ const buscarRegAusentismoId = async(req, res = response) => {
     try {
         const ausentismoRet = await Ausentismo
             .findById(idAusentismo)
-            .populate('usuario', 'nombre')
-            .populate('usuarioActualiza', 'nombre');
+            .populate('empleado', 'documento nombApellConca')
+            .populate('usuarioRegistro', 'nombre')
+            .populate('usuarioAprobRecha', 'nombre')
+            .populate('usuarioCargoPDF', 'nombre')
+            .populate('tipoAusentismo', 'tipoausentismoDesc')
 
         if (!ausentismoRet) {
             return res.status(400).json({
@@ -99,17 +114,16 @@ const buscarRegAusentismoId = async(req, res = response) => {
     } catch (error) {
         console.log(error);
         res.status(500).json({
-            status: true,
+            status: false,
             msg: 'Error durante la busqueda particular del registro de ausentismo - Ver logs'
         });
     }
 }
 
 /**
- * 
- * @param {*} req 
- * @param {*} res 
- * @returns 
+ * Operación para actualizar el ausentismo dentro del sistema
+ * @param {*} req Objeto con el payload para la peticion
+ * @param {*} res Objeto con la data de retorno seguen la peticion
  */
 const actualizarRegAusentismo = async(req, res = response) => {
 
@@ -125,10 +139,8 @@ const actualizarRegAusentismo = async(req, res = response) => {
             });
         }
 
-        req.body.usuarioActualiza = uid;
-        req.body.fechaActualizacion = '' + new Date();
-
-        const { fechaCreacion, modelo, monto, observaciones, usuario, ...campos } = req.body;
+        req.body.usuarioAprobRecha = uid;
+        const {...campos } = req.body;
 
         const ausentismoActualizado = await Ausentismo.findByIdAndUpdate(idAusentismo, campos, { new: true });
 
@@ -139,17 +151,16 @@ const actualizarRegAusentismo = async(req, res = response) => {
     } catch (error) {
         console.log(error);
         res.status(500).json({
-            status: true,
+            status: false,
             msg: 'Error durante la actualizacion del registro de ausentismo - Ver logs'
         });
     }
 }
 
 /**
- * 
- * @param {*} req 
- * @param {*} res 
- * @returns 
+ * Operación para eliminar fisicamente un ausentismo del sistema
+ * @param {*} req Objeto con el payload para la peticion
+ * @param {*} res Objeto con la data de retorno seguen la peticion
  */
 const eliminarRegAusentismo = async(req, res = response) => {
 
@@ -183,7 +194,7 @@ const eliminarRegAusentismo = async(req, res = response) => {
 
 module.exports = {
     getAusentismos,
-    crearRegAusentismos,
+    crearRegAusentismo,
     buscarRegAusentismoId,
     actualizarRegAusentismo,
     eliminarRegAusentismo

@@ -5,10 +5,11 @@ const { generarJWT } = require('../helpers/jwt')
 const { capitalizeWords, capitalizeWordsPPP } = require('../helpers/formateadores');
 
 /**
- * Operación para obtener todos los usuarios usando el desde como 
+ * Función para obtener todos los usuarios usando el desde como 
  * condicion inical de busqueda hasta el final de la coleccion.
  * @param {*} req Objeto con el payload para la peticion
- * @param {*} res Objeto con la data de retorno seguen la peticion
+ * @param {*} res Objeto con la data de retorno según la peticion
+ * @returns Array Objetos de Usuarios
  */
 const getUsuarios = async(req, res = response) => {
 
@@ -23,7 +24,7 @@ const getUsuarios = async(req, res = response) => {
         Usuario.find({}, 'nombre email role google img estado fechaCreacion')
         .skip(desde) //se salta lo registros antes del desde (posicion en collecion)
         .sort({ fechaCreacion: 1 })
-        .limit(Number(process.env.LIMIT_QUERY)),
+        .limit(Number(process.env.LIMIT_QUERY_USUARIO)),
 
         //Promesa 2
         Usuario.countDocuments()
@@ -37,9 +38,10 @@ const getUsuarios = async(req, res = response) => {
 }
 
 /**
- * Operación para crear un nuevo usuario mediante el formulario de registro
+ * Función para crear un nuevo usuario mediante el formulario de registro
  * @param {*} req Objeto con el payload para la peticion
- * @param {*} res Objeto con la data de retorno seguen la peticion
+ * @param {*} res Objeto con la data de retorno según la peticion
+ * @returns Objeto de Nuevo Usuario Creado
  */
 const crearUsuarioPorRegister = async(req, res = response) => {
 
@@ -85,10 +87,11 @@ const crearUsuarioPorRegister = async(req, res = response) => {
 }
 
 /**
- * Operación para crear un nuevo usuario mediante el formulario interno de la APP
+ * Función para crear un nuevo usuario mediante el formulario interno de la APP
  * debe ser creado siempre y cuando el usuario sea de tipo ADMIN_ROLE 
  * @param {*} req Objeto con el payload para la peticion
- * @param {*} res Objeto con la data de retorno seguen la peticion
+ * @param {*} res Objeto con la data de retorno según la peticion
+ * @returns Objeto de Nuevo Usuario Creado
  */
 const crearUsuarioPorApp = async(req, res = response) => {
     const { email, password, nombre } = req.body;
@@ -129,9 +132,10 @@ const crearUsuarioPorApp = async(req, res = response) => {
 }
 
 /**
- * Operación para actualizar la informacion de un usuario
+ * Función para actualizar la informacion de un usuario
  * @param {*} req Objeto con el payload para la peticion
- * @param {*} res Objeto con la data de retorno seguen la peticion
+ * @param {*} res Objeto con la data de retorno según la peticion
+ * @returns Objeto de Usuario Actualizado
  */
 const actualizarUsuario = async(req, res = response) => {
 
@@ -191,9 +195,10 @@ const actualizarUsuario = async(req, res = response) => {
 }
 
 /**
- * Operación para eliminar fisicamente un usuario
+ * Función para eliminar fisicamente un usuario
  * @param {*} req Objeto con el payload para la peticion
- * @param {*} res Objeto con la data de retorno seguen la peticion
+ * @param {*} res Objeto con la data de retorno según la peticion
+ * @returns Objeto de Usuario Modificado en su estado
  */
 const inactivarUsuario = async(req, res = response) => {
 
@@ -228,10 +233,10 @@ const inactivarUsuario = async(req, res = response) => {
 }
 
 /**
- * 
- * @param {*} req 
- * @param {*} res 
- * @returns 
+ * Función para cambiar el estado lógico del registro de un usuario
+ * @param {*} req Objeto con el payload para la peticion
+ * @param {*} res Objeto con la data de retorno según la peticion
+ * @returns Objeto de Usuario Modificado en su estado
  */
 const reactivarUsuario = async(req, res = response) => {
     const uid = req.params.id;
@@ -261,10 +266,10 @@ const reactivarUsuario = async(req, res = response) => {
 }
 
 /**
- * 
- * @param {*} req 
- * @param {*} res 
- * @returns 
+ * Función para relizar la busqueda de un usuario mediante el id interno
+ * @param {*} req Objeto con el payload para la peticion
+ * @param {*} res Objeto con la data de retorno según la peticion
+ * @returns Objeto de Usuario
  */
 const buscarUsuarioPorId = async(req, res = response) => {
     const idUsuario = req.params.id;

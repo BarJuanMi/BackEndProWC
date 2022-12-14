@@ -84,10 +84,7 @@ const obtenerPQRSPorId = async(req, res = response) => {
  */
 const crearPQRS = async(req, res = response) => {
     try {
-        console.log(req.body);
-
         const { tipo, empleadoAsociado, ...campos } = req.body;
-
         const uid = req.uid;
 
         const pqrsNew = new PQRSIncidente({
@@ -98,15 +95,12 @@ const crearPQRS = async(req, res = response) => {
         pqrsNew.usuarioAsignado = tipo.split('-')[1];
         pqrsNew.tipo = tipo.split('-')[0];
 
-        console.log(pqrsNew);
-
         const pqrsRet = await pqrsNew.save();
 
         res.json({
             status: true,
             pqrsRet
         });
-
     } catch (error) {
         console.log(error);
         res.status(500).json({
@@ -160,7 +154,6 @@ const obtenerPQRSFiltradas = async(req, res = response) => {
             pqrsi,
             total
         })
-
     } catch (error) {
         console.log(error);
         res.status(500).json({
@@ -196,7 +189,6 @@ const eliminarPQRS = async(req, res = response) => {
             msg: 'PQRS eliminado correctamente',
             prestamo: pqrsEliminado
         });
-
     } catch (error) {
         console.log(error);
         res.status(500).json({
@@ -238,7 +230,6 @@ const actualizarPQRS = async(req, res = response) => {
             status: true,
             retiro: regPQRSActualizado
         });
-
     } catch (error) {
         console.log(error);
         res.status(500).json({

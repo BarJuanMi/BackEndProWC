@@ -44,7 +44,7 @@ const crearRegServLavanderia = async(req, res = response) => {
             ...req.body
         });
 
-        servLavanderiaNew.fechaSalida = addHoursDate(req.body.fechaRenuncia);
+        servLavanderiaNew.fechaSalidaColchas = addHoursDate(req.body.fechaSalidaColchas);
 
         const servLavanderiaRet = await servLavanderiaNew.save();
 
@@ -74,6 +74,7 @@ const buscarServLavanderiaPorId = async(req, res = response) => {
         const servLavanRet = await ServLavanderia
             .findById(idServLavan)
             .populate('usuarioRegistro', 'nombre')
+            .populate('usuarioRecibeColchas', 'nombre')
             .populate('sede', 'nombre')
 
         if (!servLavanRet) {
@@ -103,6 +104,8 @@ const buscarServLavanderiaPorId = async(req, res = response) => {
  * @param {*} res Objeto con la data de retorno seguen la peticion
  */
 const actualizarRegServLavanderia = async(req, res = response) => {
+    console.log(req.body);
+
     const uid = req.uid;
 
     try {
@@ -128,10 +131,11 @@ const actualizarRegServLavanderia = async(req, res = response) => {
         }
 
         const regAActualizar = {
-            fechaEntregaColchas: req.body.fechaEntregaColchas,
+            fechaRecibeColchas: req.body.fechaRecibeColchas,
             recibeSatisfaccion: req.body.recibeSatisfaccion,
-            obsEntregaColchas: req.body.obsEntregaColchas,
-            estado: 'ENTREGADO A SEDE'
+            obsRecibeColchas: req.body.obsRecibeColchas,
+            estado: 'ENTREGADO EN LA SEDE',
+            usuarioRecibeColchas: uid
         };
 
         const regServLavanActualizado = await ServLavanderia.findByIdAndUpdate(idRegServLavan, regAActualizar, { new: true });

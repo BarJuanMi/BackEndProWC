@@ -1,10 +1,13 @@
 const { response } = require('express');
 const Aspirante = require('../models/aspirante.model');
+const Usuario = require('../models/usuario.model');
+const Cargoaspirante = require('../models/cargoaspirante.model');
+const Localidad = require('../models/localidadesciudad.model');
 const { addHoursDate } = require('../helpers/formateadores');
 const { formatearNumCelular } = require('../helpers/formateadores');
 
 /**
- * Operación para obtener todos los aspirantes usando el desde como 
+ * Función para obtener todos los aspirantes usando el desde como 
  * condicion inical de busqueda hasta el final de la coleccion.
  * @param {*} req Objeto con el payload para la peticion
  * @param {*} res Objeto con la data de retorno seguen la peticion
@@ -34,7 +37,7 @@ const getRegAspirantes = async(req, res = response) => {
 }
 
 /**
- * Operación para crear un nuevo retiro dentro del sistema
+ * Función para crear un nuevo retiro dentro del sistema
  * @param {*} req Objeto con el payload para la peticion
  * @param {*} res Objeto con la data de retorno seguen la peticion
  */
@@ -69,7 +72,7 @@ const crearRegAspirante = async(req, res = response) => {
 }
 
 /**
- * Operación para obtener un aspirante mediante su ID dentro del sistema
+ * Función para obtener un aspirante mediante su ID dentro del sistema
  * @param {*} req Objeto con el payload para la peticion
  * @param {*} res Objeto con la data de retorno seguen la peticion
  */
