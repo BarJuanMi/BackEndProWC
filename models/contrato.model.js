@@ -14,7 +14,12 @@ var contratoSchema = new Schema({
     fechaCargoPDF: { type: Date, required: false },
     usuarioCargoPDF: { type: Schema.Types.ObjectId, ref: 'Usuario' },
     pathPDF: { type: String, required: false },
-    estadoCargoPDF: { type: Boolean, default: false }
+    estadoCargoPDF: { type: Boolean, default: false },
+    fechaCargueDocsZIP: { type: Date, required: false },
+    usuarioCargueDocsZIP: { type: Schema.Types.ObjectId, ref: 'Usuario' },
+    pathDocsZIP: { type: String, required: false },
+    estadoCargueDocsZIP: { type: Boolean, default: false },
+    detallesCambioEstado: { type: String, required: false }
 }, {
     collection: 'contratos'
 });

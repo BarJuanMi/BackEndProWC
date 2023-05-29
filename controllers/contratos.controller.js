@@ -22,6 +22,7 @@ const getContratos = async(req, res = response) => {
         .populate('empleado', 'documento nombApellConca')
         .populate('usuarioRegistro', 'nombre')
         .populate('usuarioCargoPDF', 'nombre')
+        .populate('usuarioCargueDocsZIP', 'nombre')
         .populate('tipoContrato', 'tipocontratoDesc')
         .sort({ fechaRegistro: -1 })
         .limit(Number(process.env.LIMIT_QUERY_CONTRATOS)),
@@ -56,8 +57,10 @@ const crearRegContrato = async(req, res = response) => {
 
         const tipoContrato = await TipoContrato.findById(req.body.tipo);
 
+        contratoNew.estado = 'EN EJECUCIÓN';
+
         contratoNew.fechaInicioContrato = addHoursDate(req.body.fechaInicioContrato);
-        if (req.body.fechaFinContrato !== undefined) {
+        if (req.body.fechaFinContrato !== null) {
             contratoNew.fechaFinContrato = addHoursDate(req.body.fechaFinContrato);
         }
         contratoNew.emplNomApel = String(idEmpleadoDB.nombres).toUpperCase() + ' ' + String(idEmpleadoDB.apellidos).toUpperCase();
@@ -93,6 +96,7 @@ const buscarRegContratoId = async(req, res = response) => {
             .populate('empleado', 'documento nombApellConca')
             .populate('usuarioRegistro', 'nombre')
             .populate('usuarioCargoPDF', 'nombre')
+            .populate('usuarioCargueDocsZIP', 'nombre')
             .populate('tipoContrato', 'tipocontratoDesc')
 
         if (!contratoRet) {
@@ -135,6 +139,10 @@ const actualizarRegContrato = async(req, res = response) => {
         }
 
         const {...campos } = req.body;
+
+        campos.fechaFinContrato = new Date();
+
+        console.log(JSON.stringify(campos));
 
         const contratoActualizado = await Contrato.findByIdAndUpdate(idContrato, campos, { new: true });
 
@@ -186,6 +194,37 @@ const eliminarRegContrato = async(req, res = response) => {
     }
 }
 
+/**
+ * Operación para obtener un  tipo de contrato mediante su ID dentro del sistema
+ * @param {*} req Objeto con el payload para la peticion
+ * @param {*} res Objeto con la data de retorno seguen la peticion
+ */
+const buscarTipoContratoId = async(req, res = response) => {
+
+    const idTipoContrato = req.params.id;
+    try {
+        const tipoContratoRet = await TipoContrato.findById(idTipoContrato)
+
+        if (!tipoContratoRet) {
+            return res.status(400).json({
+                status: false,
+                msg: 'No existe el registro de contrato con ese id'
+            });
+        }
+
+        res.json({
+            status: true,
+            tipoContratoRet: tipoContratoRet
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            status: false,
+            msg: 'Error durante la busqueda particular del registro de tipo de contrato - Ver logs'
+        });
+    }
+}
+
 const borrarPDF = (adjuntoPath) => {
     if (fs.existsSync(adjuntoPath)) {
         fs.unlinkSync(adjuntoPath);
@@ -197,5 +236,6 @@ module.exports = {
     crearRegContrato,
     buscarRegContratoId,
     actualizarRegContrato,
-    eliminarRegContrato
+    eliminarRegContrato,
+    buscarTipoContratoId
 }

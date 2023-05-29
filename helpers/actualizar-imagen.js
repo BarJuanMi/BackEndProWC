@@ -9,7 +9,7 @@ const ServLavanderia = require('../models/servlavanderia.model');
 const PQRSIncidente = require('../models/pqrsincidente.model');
 
 const borrarImagen = (antiguoPath) => {
-    //console.log('antiguoPath ' + antiguoPath);
+    //console.log('La img que va a borrar es: ' + antiguoPath)
     if (fs.existsSync(antiguoPath)) {
         fs.unlinkSync(antiguoPath); //Borra la imagen de la carpeta del SO
     }

@@ -9,6 +9,7 @@ var retiroSchema = new Schema({
     motivoRetiro: { type: String, required: [true, 'El motivo es necesario'] },
     entrevista: { type: Boolean, default: false },
     encuesta: { type: Boolean, default: false },
+    causalRetiro: { type: Schema.Types.ObjectId, ref: 'CausalRetiro' },
     fechaRegistro: { type: Date, default: Date.now },
     fechaFirma: { type: String, required: false },
     fechaCargoPDF: { type: Date, required: false },

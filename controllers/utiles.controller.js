@@ -8,6 +8,7 @@ const Sede = require('../models/sede.model');
 const TipoAusentismo = require('../models/tipoausentismo.model');
 const TipoContrato = require('../models/tipocontrato.model');
 const Usuario = require('../models/usuario.model');
+const CausalRetiro = require('../models/causalretiros.model');
 
 const getCiudades = async(req, res = response) => {
     const [ciudades] = await Promise.all([
@@ -100,6 +101,17 @@ const getTipoContrato = async(req, res = response) => {
     })
 }
 
+const getCausalesRetiro = async(req, res = response) => {
+    const [causalesretiro] = await Promise.all([
+        CausalRetiro.find({}).sort({ causalretiroId: 1 })
+    ])
+
+    res.json({
+        status: true,
+        causalesretiro
+    })
+}
+
 module.exports = {
     getCiudades,
     getPaises,
@@ -108,5 +120,6 @@ module.exports = {
     getSedes,
     getTipoPQRS,
     getTipoAusentismo,
-    getTipoContrato
+    getTipoContrato,
+    getCausalesRetiro,
 }

@@ -2,7 +2,7 @@ const path = require('path');
 const { response } = require('express');
 const { v4: uuidv4 } = require('uuid');
 const fs = require('fs');
-const { actualizarPDFFiles } = require('../helpers/actualizar-pdf-file');
+const { actualizarZIPFiles } = require('../helpers/actualizar-zip-file');
 
 /**
  * 
@@ -10,18 +10,18 @@ const { actualizarPDFFiles } = require('../helpers/actualizar-pdf-file');
  * @param {*} res 
  * @returns 
  */
-const filePDFUpload = (req, res = response) => {
+const fileCompressedUpload = (req, res = response) => {
 
     const uidUsuario = req.uid; //Saca el uid (identificador del usuario dentro del token de la peticion)
 
     const tipo = req.params.tipo;
     const id = req.params.id;
 
-    const tiposValidos = ['pazysalvos', 'respsicologico', 'hojasvida', 'ausentismos', 'memorandos', 'contratos'];
+    const tiposValidos = ['contratos', 'facturacion', 'servpublicos'];
     if (!tiposValidos.includes(tipo)) {
         return res.status(400).json({
             status: false,
-            msg: 'No existe una carpeta con el determinado tipo'
+            msg: 'No existe una carpeta con el nombre' + tipo + 'para recibir archivos'
         });
     }
 
@@ -42,7 +42,7 @@ const filePDFUpload = (req, res = response) => {
     const extensionArch = nombreCortado[nombreCortado.length - 1];
 
     //Validar que la extension del archivo sea valida
-    const extensionesValidas = ['pdf'];
+    const extensionesValidas = ['zip', 'rar', '7z'];
     if (!extensionesValidas.includes(extensionArch)) {
         return res.status(400).json({
             status: false,
@@ -67,11 +67,11 @@ const filePDFUpload = (req, res = response) => {
         }
 
         //Actualizar la BD
-        actualizarPDFFiles(tipo, id, nombreArch, uidUsuario);
+        actualizarZIPFiles(tipo, id, nombreArch, uidUsuario);
 
         res.json({
             status: true,
-            msg: 'Carga satisfactoria del archivo pdf',
+            msg: 'Carga satisfactoria del archivo comprimido (zip, rar, 7z)',
             nombreArchivo: nombreArch
         });
     });
@@ -82,24 +82,26 @@ const filePDFUpload = (req, res = response) => {
  * @param {*} req 
  * @param {*} res 
  */
-const filePDFReturn = (req, res = response) => {
+const fileCompressedReturn = (req, res = response) => {
 
     const tipo = req.params.tipo;
-    const pdfName = req.params.pdf;
+    const fileCompreName = req.params.zip;
 
-    const pathImg = path.join(__dirname, `../uploads/${tipo}/${pdfName}.pdf`);
+    const pathFileCompre = path.join(__dirname, `../uploads/${tipo}/${fileCompreName}.zip`);
 
-    if (fs.existsSync(pathImg)) {
-        res.setHeader('Content-Type', 'application/pdf');
-        res.contentType("application/pdf");
-        fs.createReadStream(pathImg).pipe(res);
+    console.log(pathFileCompre);
+
+    if (fs.existsSync(pathFileCompre)) {
+        res.setHeader('Content-Type', 'application/zip');
+        res.contentType("application/zip");
+        fs.createReadStream(pathFileCompre).pipe(res);
     } else {
-        const pathImg = path.join(__dirname, `../uploads/No_Image_Available.jpg`);
-        res.sendFile(pathImg);
+        const pathFileCompre = path.join(__dirname, `../uploads/No_Image_Available.jpg`);
+        res.sendFile(pathFileCompre);
     }
 }
 
 module.exports = {
-    filePDFUpload,
-    filePDFReturn
+    fileCompressedUpload,
+    fileCompressedReturn
 }

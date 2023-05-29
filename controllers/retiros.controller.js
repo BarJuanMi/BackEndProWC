@@ -1,6 +1,7 @@
 const { response } = require('express');
 const Retiro = require('../models/retiro.model');
 const Empleado = require('../models/empleado.model');
+const CausalRetiro = require('../models/causalretiros.model');
 const Usuario = require('../models/usuario.model');
 const { addHoursDate } = require('../helpers/formateadores');
 
@@ -21,6 +22,7 @@ const getRetiros = async(req, res = response) => {
         .populate('empleado', 'documento nombApellConca')
         .populate('usuarioRegistro', 'nombre')
         .populate('usuarioCargoPDF', 'nombre')
+        .populate('causalRetiro', 'causalretiroDesc')
         .sort({ fechaRegistro: -1 })
         .limit(Number(process.env.LIMIT_QUERY_RETIROS)),
 
@@ -48,6 +50,9 @@ const crearRetiro = async(req, res = response) => {
 
         const empleadoInactivado = await Empleado.findByIdAndUpdate(idEmpleado, { estado: false, fechaInactivacion: new Date() }, { new: true });
 
+        console.log(req.body);
+        const causalRetiro = await CausalRetiro.findById(req.body.causal);
+
         const retiroNew = new Retiro({
             usuarioRegistro: uid,
             ...req.body
@@ -55,6 +60,7 @@ const crearRetiro = async(req, res = response) => {
 
         retiroNew.fechaRenuncia = addHoursDate(req.body.fechaRenuncia);
         retiroNew.emplNomApel = String(empleadoInactivado.nombres).toUpperCase() + ' ' + String(empleadoInactivado.apellidos).toUpperCase();
+        retiroNew.causalRetiro = causalRetiro._id;
         const retiroRet = await retiroNew.save();
 
         res.json({
@@ -85,6 +91,7 @@ const buscarRetiroPorId = async(req, res = response) => {
             .findById(idRetiro)
             .populate('empleado', 'documento nombApellConca')
             .populate('usuarioRegistro', 'nombre')
+            .populate('causalRetiro', 'causalretiroDesc')
             .populate('usuarioCargoPDF', 'nombre');
 
         if (!retiroRet) {
@@ -127,27 +134,7 @@ const actualizarRetiro = async(req, res = response) => {
             });
         }
 
-        const estadoAux = req.body.estadoCargoPDF;
-
-        if (estadoAux === undefined) {
-            req.body.estado = 'FIRMADO';
-        }
-
-        const {
-            empleado,
-            usuarioRegistro,
-            motivoRetiro,
-            fechaRegistro,
-            encuesta,
-            entrevista,
-            fechaRenuncia,
-            usuarioCargoPDF,
-            fechaCargoPDF,
-            pathPDF,
-            estadoCargoPDF,
-            ...campos
-        } = req.body;
-
+        const {...campos } = req.body;
         const retiroActualizado = await Retiro.findByIdAndUpdate(idRetiro, campos, { new: true });
 
         res.json({

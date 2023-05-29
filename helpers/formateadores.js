@@ -25,6 +25,12 @@ const addHoursDate = (fechaString) => {
     return fecha;
 }
 
+const addHoursDateActual = () => {
+    fecha = new Date();
+    fecha.addHours(Number(process.env.COUNT_HOURS_TO_ADD));
+    return fecha;
+}
+
 //capitalize only the first letter of the string. 
 function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
@@ -39,5 +45,6 @@ module.exports = {
     formatearNumCelular,
     formatearGenero,
     addHoursDate,
-    capitalizeWords
+    capitalizeWords,
+    addHoursDateActual
 }

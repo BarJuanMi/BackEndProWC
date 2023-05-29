@@ -4,6 +4,7 @@ const Retiro = require('../models/retiro.model');
 const Aspirante = require('../models/aspirante.model');
 const Ausentismo = require('../models/ausentismo.model');
 const Memorando = require('../models/memorando.model');
+const Contrato = require('../models/contrato.model');
 
 const borrarPDF = (antiguoPath) => {
     console.log('El que va a borrar es: ' + antiguoPath)
@@ -93,6 +94,23 @@ const actualizarPDFFiles = async(tipo, id, nombreArch, uidUsuario) => {
             memorando.estadoCargoPDF = true;
             memorando.pathPDF = nombreArch;
             await memorando.save();
+            return true;
+            break;
+
+        case 'contratos':
+            const contrato = await Contrato.findById(id);
+            if (!contrato) {
+                return false;
+            }
+
+            antiguoPathContrato = `./uploads/${tipo}/${contrato.pathPDF}`;
+            borrarPDF(antiguoPathContrato);
+
+            contrato.usuarioCargoPDF = uidUsuario;
+            contrato.fechaCargoPDF = new Date();
+            contrato.estadoCargoPDF = true;
+            contrato.pathPDF = nombreArch;
+            await contrato.save();
             return true;
             break;
     }
