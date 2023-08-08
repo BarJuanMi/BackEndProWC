@@ -5,6 +5,7 @@ const Pais = require('../models/pais.model');
 const Ciudad = require('../models/ciudad.model');
 const Usuario = require('../models/usuario.model');
 const { formatearNumCelular } = require('../helpers/formateadores');
+const { validationResult } = require('express-validator');
 
 /**
  * 
@@ -105,6 +106,15 @@ const crearEmpleado = async(req, res = response) => {
             usuarioCreacion: uid,
             ...req.body
         });
+
+        const errores = validationResult(req);
+        if (!errores.isEmpty()) {
+            return res.status(400).json({
+                status: true,
+                msg: 'Error por información faltante de campos',
+                errors: errores.mapped()
+            });
+        }
 
         empleadoNew.nombres = String(req.body.nombres).toUpperCase();
         empleadoNew.apellidos = String(req.body.apellidos).toUpperCase();

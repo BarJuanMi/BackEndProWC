@@ -1,6 +1,6 @@
 const { response } = require('express');
 const Prestamo = require('../models/prestamo.model');
-
+const { insertarRegAuditoria } = require('../helpers/auditoria-log');
 /**
  * 
  * @param {*} req 
@@ -50,6 +50,8 @@ const crearPrestamo = async(req, res = response) => {
         prestamoNew.fechaCreacion = new Date();
 
         const prestamoRet = await prestamoNew.save();
+
+        insertarRegAuditoria(uid, 'CREAR NUEVO PRESTAMO', 'MEDIA', JSON.stringify(req.body));
 
         res.json({
             status: true,

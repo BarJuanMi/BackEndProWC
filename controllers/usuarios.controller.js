@@ -2,7 +2,7 @@ const { response } = require('express');
 const Usuario = require('../models/usuario.model');
 const bcrypt = require('bcryptjs');
 const { generarJWT } = require('../helpers/jwt')
-const { capitalizeWords, capitalizeWordsPPP } = require('../helpers/formateadores');
+
 
 /**
  * Función para obtener todos los usuarios usando el desde como 
