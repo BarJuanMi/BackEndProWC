@@ -51,7 +51,7 @@ const crearPrestamo = async(req, res = response) => {
 
         const prestamoRet = await prestamoNew.save();
 
-        insertarRegAuditoria(uid, 'CREAR NUEVO PRESTAMO', 'MEDIA', JSON.stringify(req.body));
+        insertarRegAuditoria(uid, 'CREACIÓN DE NUEVO PRESTAMO', 'ALTA', JSON.stringify(req.body));
 
         res.json({
             status: true,
@@ -62,7 +62,7 @@ const crearPrestamo = async(req, res = response) => {
         console.log(error);
         res.status(500).json({
             status: true,
-            msg: 'Error durante la creación de Prestamo - Ver logs'
+            msg: 'Error durante la creación de prestamo - Ver logs'
         });
     }
 }
@@ -130,6 +130,8 @@ const actualizarPrestamo = async(req, res = response) => {
 
         const prestamoActualizado = await Prestamo.findByIdAndUpdate(idPrestamo, campos, { new: true });
 
+        insertarRegAuditoria(uid, 'ACTUALIZACIÓN DE PRESTAMO', 'MEDIA', JSON.stringify(req.body));
+
         res.json({
             status: true,
             prestamo: prestamoActualizado
@@ -138,7 +140,7 @@ const actualizarPrestamo = async(req, res = response) => {
         console.log(error);
         res.status(500).json({
             status: true,
-            msg: 'Error durante la inactivacion de Modelo - Ver logs'
+            msg: 'Error durante la actualizacion del prestamo - Ver logs'
         });
     }
 }
@@ -164,6 +166,8 @@ const eliminarPrestamo = async(req, res = response) => {
 
         const prestamoEliminado = await Prestamo.findByIdAndDelete(idPrestamo);
 
+        insertarRegAuditoria(uid, 'ELIMINACIÓN DE PRESTAMO', 'BAJA', JSON.stringify(req.body));
+
         res.json({
             status: true,
             msg: 'Prestamo eliminado correctamente',
@@ -174,7 +178,7 @@ const eliminarPrestamo = async(req, res = response) => {
         console.log(error);
         res.status(500).json({
             status: false,
-            msg: 'Error durante la eliminacion del Prestamo - Ver logs'
+            msg: 'Error durante la eliminacion del prestamo - Ver logs'
         });
     }
 }

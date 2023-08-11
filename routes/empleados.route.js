@@ -28,7 +28,7 @@ router.get('/tipo/:filtro', validarJWT, getEmpleadosxTipo);
 router.post(
     '/crearEmpleadoxTipo/:tipo', [
         validarJWT,
-        check('documento', 'Campo documento vacío').not().isEmpty(),
+        /*check('documento', 'Campo documento vacío').not().isEmpty(),
         check('tipoDocumento', 'Campo tipoDocumento vacío').not().isEmpty(),
         check('genero', 'Campo genero vacío').not().isEmpty(),
         check('nombres', 'Campo nombres vacío').not().isEmpty(),
@@ -40,7 +40,7 @@ router.post(
         check('rh', 'Campo rh vacío').not().isEmpty(),
         check('nomContEmer', 'Campo nomContEmer vacío').not().isEmpty(),
         check('telContEmer', 'Campo telContEmer vacío').not().isEmpty(),
-        check('fechaIngreso', 'Campo fechaIngreso vacío').not().isEmpty(),
+        check('fechaIngreso', 'Campo fechaIngreso vacío').not().isEmpty(),*/
     ],
     crearEmpleado
 );

@@ -57,6 +57,7 @@ app.use('/api/retiros', require('./routes/retiros.route'));
 app.use('/api/ausentismos', require('./routes/ausentismos.route'));
 app.use('/api/memorandos', require('./routes/memorandos.route'));
 app.use('/api/contratos', require('./routes/contratos.route'));
+app.use('/api/facturas', require('./routes/facturas.route'));
 app.use('/api/auditorias', require('./routes/auditorias.route'));
 
 app.listen(process.env.PORT, () => {
