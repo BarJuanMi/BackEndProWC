@@ -1,7 +1,9 @@
 const { response } = require('express');
 const Factura = require('../models/factura.model');
+const Contrato = require('../models/contrato.model');
 const TipoCompraFactura = require('../models/tipocomprafactura.model');
 const { insertarRegAuditoria } = require('../helpers/auditoria-log');
+const { addHoursDate } = require('../helpers/formateadores');
 
 /**
  * 
@@ -39,7 +41,6 @@ const getFacturas = async(req, res = response) => {
  * @param {*} res Objeto con la data de retorno seguen la peticion
  */
 const crearRegFactura = async(req, res = response) => {
-
     try {
         const uid = req.uid; //Saca el uid (identificador del usuario dentro del token de la peticion)
         req.body.usuario = uid;
@@ -113,8 +114,9 @@ const buscarRegFacturaId = async(req, res = response) => {
  * @param {*} res Objeto con la data de retorno seguen la peticion
  */
 const eliminarRegFactura = async(req, res = response) => {
-
+    const uid = req.uid;
     const idFactura = req.params.id;
+
     try {
         const resFacturaDB = await Factura.findById(idFactura);
 
@@ -139,14 +141,49 @@ const eliminarRegFactura = async(req, res = response) => {
         console.log(error);
         res.status(500).json({
             status: false,
-            msg: 'Error durante la eliminacion del registro de factura - Ver logs'
+            msg: 'Error durante la eliminación del registro de factura - Ver logs'
         });
     }
 }
+
+/**
+ * Operación para eliminar fisicamente un factura del sistema
+ * @param {*} req Objeto con el payload para la peticion
+ * @param {*} res Objeto con la data de retorno seguen la peticion
+ */
+const actualizarRegFactura = async(req, res = response) => {
+    const uid = req.uid;
+    const idFactura = req.params.id;
+
+    try {
+        const resFacturaDB = await Factura.findById(idFactura);
+
+        const {...cambio } = req.body;
+
+        const contratoActualizado = await Contrato.findByIdAndUpdate(contratoRetDB, cambio, { new: true });
+
+        insertarRegAuditoria(uid, 'ACTUALIZACIÓN DE FACTURA', 'BAJA', JSON.stringify(req.body));
+
+        if (!resFacturaDB) {
+            return res.status(400).json({
+                status: false,
+                msg: 'No existe el registro de factura con ese id'
+            });
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            status: false,
+            msg: 'Error durante la actualización del registro de factura - Ver logs'
+        });
+    }
+}
+
 
 module.exports = {
     getFacturas,
     crearRegFactura,
     buscarRegFacturaId,
     eliminarRegFactura,
+    actualizarRegFactura,
 }

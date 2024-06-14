@@ -152,6 +152,7 @@ const actualizarPrestamo = async(req, res = response) => {
  * @returns 
  */
 const eliminarPrestamo = async(req, res = response) => {
+    const uid = req.uid;
     const idPrestamo = req.params.id;
 
     try {

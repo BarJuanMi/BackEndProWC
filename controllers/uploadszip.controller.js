@@ -11,17 +11,18 @@ const { actualizarZIPFiles } = require('../helpers/actualizar-zip-file');
  * @returns 
  */
 const fileCompressedUpload = (req, res = response) => {
+    console.log('Que mierda');
 
     const uidUsuario = req.uid; //Saca el uid (identificador del usuario dentro del token de la peticion)
 
     const tipo = req.params.tipo;
     const id = req.params.id;
 
-    const tiposValidos = ['contratos', 'facturacion', 'servpublicos'];
+    const tiposValidos = ['contratos', 'facturas', 'servpublicos'];
     if (!tiposValidos.includes(tipo)) {
         return res.status(400).json({
             status: false,
-            msg: 'No existe una carpeta con el nombre' + tipo + 'para recibir archivos'
+            msg: 'No existe una carpeta con el nombre ' + tipo + ' para recibir archivos'
         });
     }
 
@@ -29,7 +30,7 @@ const fileCompressedUpload = (req, res = response) => {
     if (!req.files || Object.keys(req.files).length === 0) {
         return res.status(400).json({
             status: false,
-            msg: 'No hay un archivo para cargar.'
+            msg: 'No hay un archivo zip o rar o 7z para cargar.'
         });
     }
 
@@ -53,7 +54,7 @@ const fileCompressedUpload = (req, res = response) => {
     const nombreArch = `${ uuidv4() }.${extensionArch}`;
 
     //Path para guardar la imagen
-    const uploadPath = `./uploads/${tipo}/${nombreArch}`;
+    const uploadPath = `./uploads/zip/${tipo}/${nombreArch}`;
     //console.log(uploadPath);
 
     //Mover la imagen al path destino
@@ -87,7 +88,7 @@ const fileCompressedReturn = (req, res = response) => {
     const tipo = req.params.tipo;
     const fileCompreName = req.params.zip;
 
-    const pathFileCompre = path.join(__dirname, `../uploads/${tipo}/${fileCompreName}.zip`);
+    const pathFileCompre = path.join(__dirname, `../uploads/zip/${tipo}/${fileCompreName}.zip`);
 
     console.log(pathFileCompre);
 

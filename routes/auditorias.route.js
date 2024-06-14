@@ -9,6 +9,6 @@ const router = Router();
 
 router.get('/', validarJWT, getAuditorias);
 
-router.post('/crearRegAuditoria', validarJWT, crearRegAuditoria);
+router.post('/crearRegAuditoria', crearRegAuditoria);
 
 module.exports = router;

@@ -1,5 +1,6 @@
 const { response } = require('express');
 const Retiro = require('../models/retiro.model');
+const Contrato = require('../models/contrato.model');
 const Empleado = require('../models/empleado.model');
 const CausalRetiro = require('../models/causalretiros.model');
 const Usuario = require('../models/usuario.model');
@@ -50,7 +51,6 @@ const crearRetiro = async(req, res = response) => {
 
         const empleadoInactivado = await Empleado.findByIdAndUpdate(idEmpleado, { estado: false, fechaInactivacion: new Date() }, { new: true });
 
-        console.log(req.body);
         const causalRetiro = await CausalRetiro.findById(req.body.causal);
 
         const retiroNew = new Retiro({
@@ -133,6 +133,11 @@ const actualizarRetiro = async(req, res = response) => {
                 msg: 'No existe el retiro con ese id'
             });
         }
+
+        const contratoRetDB = await Contrato.find({ empleado: resRetiroDB.empleado });
+        const cambio = { estado: 'FINALIZADO' };
+
+        const contratoActualizado = await Contrato.findByIdAndUpdate(contratoRetDB, cambio, { new: true });
 
         const {...campos } = req.body;
         const retiroActualizado = await Retiro.findByIdAndUpdate(idRetiro, campos, { new: true });

@@ -45,6 +45,8 @@ const getContratos = async(req, res = response) => {
  */
 const crearRegContrato = async(req, res = response) => {
     try {
+        console.log(req.body);
+
         const uid = req.uid; //Saca el uid (identificador del usuario dentro del token de la peticion)
         req.body.usuario = uid;
 
@@ -57,7 +59,7 @@ const crearRegContrato = async(req, res = response) => {
 
         const tipoContrato = await TipoContrato.findById(req.body.tipo);
 
-        contratoNew.estado = 'EN EJECUCIÓN';
+        contratoNew.estado = 'VIGENTE';
 
         contratoNew.fechaInicioContrato = addHoursDate(req.body.fechaInicioContrato);
         if (req.body.fechaFinContrato !== null) {
