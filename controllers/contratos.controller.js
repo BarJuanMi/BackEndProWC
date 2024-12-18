@@ -45,8 +45,6 @@ const getContratos = async(req, res = response) => {
  */
 const crearRegContrato = async(req, res = response) => {
     try {
-        console.log(req.body);
-
         const uid = req.uid; //Saca el uid (identificador del usuario dentro del token de la peticion)
         req.body.usuario = uid;
 
@@ -57,23 +55,33 @@ const crearRegContrato = async(req, res = response) => {
 
         const idEmpleadoDB = await Empleado.findById(req.body.empleado);
 
-        const tipoContrato = await TipoContrato.findById(req.body.tipo);
+        const contratoValida = await Contrato.findOne({ empleado: idEmpleadoDB, estado: 'VIGENTE' });
+        console.log(JSON.stringify(contratoValida));
+        if (contratoValida == null) {
+            const tipoContrato = await TipoContrato.findById(req.body.tipo);
+            contratoNew.estado = 'VIGENTE';
 
-        contratoNew.estado = 'VIGENTE';
+            contratoNew.fechaInicioContrato = addHoursDate(req.body.fechaInicioContrato);
+            if (req.body.fechaFinContrato !== null) {
+                contratoNew.fechaFinContrato = addHoursDate(req.body.fechaFinContrato);
+            }
+            contratoNew.emplNomApel = String(idEmpleadoDB.nombres).toUpperCase() + ' ' + String(idEmpleadoDB.apellidos).toUpperCase();
+            contratoNew.tipoContrato = tipoContrato._id;
 
-        contratoNew.fechaInicioContrato = addHoursDate(req.body.fechaInicioContrato);
-        if (req.body.fechaFinContrato !== null) {
-            contratoNew.fechaFinContrato = addHoursDate(req.body.fechaFinContrato);
+            const contratoRet = await contratoNew.save();
+
+            res.json({
+                status: true,
+                contratoRet,
+                msg: 'Registro de Contrato Creado Satisfactoriamente'
+            });
+        } else {
+            console.log('No deberia dejar crear');
+            res.json({
+                status: false,
+                msg: 'No es posible crear un nuevo contrato, este empleado ya tiene uno VIGENTE.'
+            });
         }
-        contratoNew.emplNomApel = String(idEmpleadoDB.nombres).toUpperCase() + ' ' + String(idEmpleadoDB.apellidos).toUpperCase();
-        contratoNew.tipoContrato = tipoContrato._id;
-
-        const contratoRet = await contratoNew.save();
-
-        res.json({
-            status: true,
-            contratoRet
-        });
 
     } catch (error) {
         console.log(error);

@@ -21,6 +21,7 @@ const getRetiros = async(req, res = response) => {
         Retiro.find({}) //solo me muestra en el resultado de la consulta las columnas
         .skip(desde)
         .populate('empleado', 'documento nombApellConca')
+        .populate('contrato', 'id')
         .populate('usuarioRegistro', 'nombre')
         .populate('usuarioCargoPDF', 'nombre')
         .populate('causalRetiro', 'causalretiroDesc')
@@ -45,12 +46,24 @@ const getRetiros = async(req, res = response) => {
  */
 const crearRetiro = async(req, res = response) => {
     try {
+        console.log(req.body);
+
         const idEmpleado = req.body.empleado;
 
-        const uid = req.uid; //Saca el uid (identificador del usuario dentro del token de la peticion)
+        const uid = req.uid; // Saca el uid (identificador del usuario dentro del token de la peticion)
 
-        const empleadoInactivado = await Empleado.findByIdAndUpdate(idEmpleado, { estado: false, fechaInactivacion: new Date() }, { new: true });
+        /*if (req.body.contrato != null) {
+            const contratoAsociado = await Contrato.findById(req.body.contrato);
 
+            if (contratoAsociado.estado == 'VIGENTE') {
+                const contratoActualizado = await Contrato.findByIdAndUpdate(req.body.contrato, {
+                    estado: 'FINALIZADO POR CREACION DE RETIRO',
+                    detallesCambioEstado: 'SE FINALIZA EL CONTRATO DE FORMA AUTOMATICA POR LA CREACION DE UN REGISTRO DE RETIRO QUE FUE ASOCIADO AL EMPLEADO. REVISE LOS DETALLES DEL RETIRO'
+                }, { new: true });
+            }
+        }*/
+
+        const empleadoInactivado = await Empleado.findByIdAndUpdate(idEmpleado, { estado: false, fechaInactivacion: new Date(), }, { new: true });
         const causalRetiro = await CausalRetiro.findById(req.body.causal);
 
         const retiroNew = new Retiro({
@@ -90,6 +103,7 @@ const buscarRetiroPorId = async(req, res = response) => {
         const retiroRet = await Retiro
             .findById(idRetiro)
             .populate('empleado', 'documento nombApellConca')
+            .populate('contrato', 'id')
             .populate('usuarioRegistro', 'nombre')
             .populate('causalRetiro', 'causalretiroDesc')
             .populate('usuarioCargoPDF', 'nombre');
@@ -120,24 +134,17 @@ const buscarRetiroPorId = async(req, res = response) => {
  * @param {*} res Objeto con la data de retorno seguen la peticion
  */
 const actualizarRetiro = async(req, res = response) => {
-    const uid = req.uid;
-
     try {
+        const uid = req.uid;
         const idRetiro = req.params.id;
 
         const resRetiroDB = await Retiro.findById(idRetiro);
-
         if (!resRetiroDB) {
             return res.status(400).json({
                 status: false,
                 msg: 'No existe el retiro con ese id'
             });
         }
-
-        const contratoRetDB = await Contrato.find({ empleado: resRetiroDB.empleado });
-        const cambio = { estado: 'FINALIZADO' };
-
-        const contratoActualizado = await Contrato.findByIdAndUpdate(contratoRetDB, cambio, { new: true });
 
         const {...campos } = req.body;
         const retiroActualizado = await Retiro.findByIdAndUpdate(idRetiro, campos, { new: true });
@@ -146,7 +153,6 @@ const actualizarRetiro = async(req, res = response) => {
             status: true,
             retiro: retiroActualizado
         });
-
     } catch (error) {
         console.log(error);
         res.status(500).json({

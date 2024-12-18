@@ -7,6 +7,7 @@ const Localidad = require('../models/localidadesciudad.model');
 const Sede = require('../models/sede.model');
 const TipoAusentismo = require('../models/tipoausentismo.model');
 const TipoContrato = require('../models/tipocontrato.model');
+const TipoCompraFactura = require('../models/tipocomprafactura.model');
 const Usuario = require('../models/usuario.model');
 const CausalRetiro = require('../models/causalretiros.model');
 
@@ -101,6 +102,17 @@ const getTipoContrato = async(req, res = response) => {
     })
 }
 
+const getTipoFactura = async(req, res = response) => {
+    const [tipoFacturas] = await Promise.all([
+        TipoCompraFactura.find({}).sort({ tipocomprafactId: 1 })
+    ])
+
+    res.json({
+        status: true,
+        tipoFacturas
+    })
+}
+
 const getCausalesRetiro = async(req, res = response) => {
     const [causalesretiro] = await Promise.all([
         CausalRetiro.find({}).sort({ causalretiroId: 1 })
@@ -122,4 +134,5 @@ module.exports = {
     getTipoAusentismo,
     getTipoContrato,
     getCausalesRetiro,
+    getTipoFactura,
 }

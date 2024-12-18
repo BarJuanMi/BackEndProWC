@@ -109,9 +109,6 @@ const eliminarRegVacunado = async(req, res = response) => {
  * @returns 
  */
 const crearRegDosis = async(req, res = response) => {
-
-    console.log(req.body);
-
     const idRegVacunado = req.params.id;
     let aprueba = false;
 

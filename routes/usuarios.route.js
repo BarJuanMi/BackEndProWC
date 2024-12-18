@@ -2,7 +2,7 @@
     Ruta: /api/usuarios
 */
 const { Router } = require('express');
-const { getUsuarios, crearUsuarioPorRegister, crearUsuarioPorApp, actualizarUsuario, inactivarUsuario, buscarUsuarioPorId, reactivarUsuario } = require('../controllers/usuarios.controller');
+const { getUsuarios, crearUsuarioPorRegister, crearUsuarioPorApp, actualizarUsuario, inactivarUsuario, buscarUsuarioPorId, reactivarUsuario, getUsuariosxRole, getUsuariosxEstado } = require('../controllers/usuarios.controller');
 const { check } = require('express-validator');
 const { validarCampos } = require('../middlewares/validar-campos');
 const { validarJWT } = require('../middlewares/validar-jwt');
@@ -13,6 +13,10 @@ const router = Router();
 //2do argumento los middleware
 //3er argumento la operacion del controlador
 router.get('/', validarJWT, getUsuarios);
+
+router.get('/getUserFilterRole', validarJWT, getUsuariosxRole);
+
+router.get('/getUserFilterStatus', validarJWT, getUsuariosxEstado);
 
 router.post('/crearUsuarioPorRegister', [
         check('nombre', 'El nombre es obligatorio').not().isEmpty(),
@@ -25,11 +29,11 @@ router.post('/crearUsuarioPorRegister', [
 );
 
 router.post('/crearUsuarioPorApp', [
-    check('nombre', 'El nombre es obligatorio').not().isEmpty(),
-    check('email', 'El email es obligatorio').not().isEmpty(),
-    check('email', 'El email no tiene una estructura correcta').isEmail(),
-    check('password', 'El password es obligatorio').not().isEmpty(),
-    validarCampos
+        check('nombre', 'El nombre es obligatorio').not().isEmpty(),
+        check('email', 'El email es obligatorio').not().isEmpty(),
+        check('email', 'El email no tiene una estructura correcta').isEmail(),
+        check('password', 'El password es obligatorio').not().isEmpty(),
+        validarCampos
     ],
     crearUsuarioPorApp
 );

@@ -13,7 +13,7 @@ router.get('/', validarJWT, getFacturas);
 
 router.post('/crearRegFactura', validarJWT, crearRegFactura);
 
-router.get('/buscarFacturaPorId/:id', validarJWT, buscarRegFacturaId);
+router.get('/buscarRegFacturaId/:id', validarJWT, buscarRegFacturaId);
 
 router.delete('/eliminarRegFactura/:id', validarJWT, eliminarRegFactura);
 

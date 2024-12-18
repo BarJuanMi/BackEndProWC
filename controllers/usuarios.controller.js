@@ -23,8 +23,64 @@ const getUsuarios = async(req, res = response) => {
         //Los filtros de los campos a mostrar se controlan desde el modelo
         Usuario.find({}, 'nombre email role google img estado fechaCreacion')
         .skip(desde) //se salta lo registros antes del desde (posicion en collecion)
-        .sort({ fechaCreacion: 1 })
+        .sort({ fechaCreacion: 1, estado: 1 })
         .limit(Number(process.env.LIMIT_QUERY_USUARIO)),
+
+        //Promesa 2
+        Usuario.countDocuments()
+    ]);
+
+    res.json({
+        status: true,
+        usuarios,
+        total
+    })
+}
+
+/**
+ * Función para obtener todos los usuarios usando el desde como 
+ * condicion inical de busqueda hasta el final de la coleccion.
+ * @param {*} req Objeto con el payload para la peticion
+ * @param {*} res Objeto con la data de retorno según la peticion
+ * @returns Array Objetos de Usuarios
+ */
+const getUsuariosxRole = async(req, res = response) => {
+    const value = req.query.value;
+    //Collecion de promesas que se ejecutan simultaneamente
+    //separadas por una coma dentro del arreglo
+    const [usuarios, total] = await Promise.all([
+        //Promesa 1
+        //Los filtros de los campos a mostrar se controlan desde el modelo        
+        Usuario.find({ role: value }, 'nombre email role google img estado fechaCreacion')
+        .sort({ fechaCreacion: 1 }),
+
+        //Promesa 2
+        Usuario.countDocuments()
+    ]);
+
+    res.json({
+        status: true,
+        usuarios,
+        total
+    })
+}
+
+/**
+ * Función para obtener todos los usuarios usando el desde como 
+ * condicion inical de busqueda hasta el final de la coleccion.
+ * @param {*} req Objeto con el payload para la peticion
+ * @param {*} res Objeto con la data de retorno según la peticion
+ * @returns Array Objetos de Usuarios
+ */
+const getUsuariosxEstado = async(req, res = response) => {
+    const value = req.query.value;
+    //Collecion de promesas que se ejecutan simultaneamente
+    //separadas por una coma dentro del arreglo
+    const [usuarios, total] = await Promise.all([
+        //Promesa 1
+        //Los filtros de los campos a mostrar se controlan desde el modelo        
+        Usuario.find({ estado: value }, 'nombre email role google img estado fechaCreacion')
+        .sort({ fechaCreacion: 1 }),
 
         //Promesa 2
         Usuario.countDocuments()
@@ -299,6 +355,8 @@ const buscarUsuarioPorId = async(req, res = response) => {
 
 module.exports = {
     getUsuarios,
+    getUsuariosxRole,
+    getUsuariosxEstado,
     crearUsuarioPorRegister,
     crearUsuarioPorApp,
     actualizarUsuario,

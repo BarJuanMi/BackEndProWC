@@ -19,7 +19,7 @@ var contratoSchema = new Schema({
     usuarioCargueDocsZIP: { type: Schema.Types.ObjectId, ref: 'Usuario' },
     pathDocsZIP: { type: String, required: false },
     estadoCargueDocsZIP: { type: Boolean, default: false },
-    detallesCambioEstado: { type: String, required: false }
+    detallesCambioEstado: { type: String, required: false, default: '' }
 }, {
     collection: 'contratos'
 });

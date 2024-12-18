@@ -11,8 +11,6 @@ const { actualizarZIPFiles } = require('../helpers/actualizar-zip-file');
  * @returns 
  */
 const fileCompressedUpload = (req, res = response) => {
-    console.log('Que mierda');
-
     const uidUsuario = req.uid; //Saca el uid (identificador del usuario dentro del token de la peticion)
 
     const tipo = req.params.tipo;

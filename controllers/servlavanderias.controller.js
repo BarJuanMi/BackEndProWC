@@ -104,8 +104,6 @@ const buscarServLavanderiaPorId = async(req, res = response) => {
  * @param {*} res Objeto con la data de retorno seguen la peticion
  */
 const actualizarRegServLavanderia = async(req, res = response) => {
-    console.log(req.body);
-
     const uid = req.uid;
 
     try {

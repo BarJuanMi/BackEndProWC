@@ -3,6 +3,7 @@ const { Schema, model } = require('mongoose');
 var retiroSchema = new Schema({
     empleado: { type: Schema.Types.ObjectId, ref: 'Empleado' },
     emplNomApel: { type: String, required: false },
+    contrato: { type: Schema.Types.ObjectId, ref: 'Contrato', },
     usuarioRegistro: { type: Schema.Types.ObjectId, ref: 'Usuario' },
     fechaRenuncia: { type: Date, required: false },
     estado: { type: String, required: [true, 'El estado es necesario'] },
@@ -15,7 +16,7 @@ var retiroSchema = new Schema({
     fechaCargoPDF: { type: Date, required: false },
     usuarioCargoPDF: { type: Schema.Types.ObjectId, ref: 'Usuario' },
     pathPDF: { type: String, required: false },
-    estadoCargoPDF: { type: Boolean, default: false }
+    estadoCargoPDF: { type: Boolean, default: false },
 }, {
     collection: 'retiros'
 });

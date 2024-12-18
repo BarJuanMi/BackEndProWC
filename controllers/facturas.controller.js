@@ -1,7 +1,8 @@
 const { response } = require('express');
 const Factura = require('../models/factura.model');
-const Contrato = require('../models/contrato.model');
 const TipoCompraFactura = require('../models/tipocomprafactura.model');
+const Sede = require('../models/sede.model');
+const Usuario = require('../models/usuario.model');
 const { insertarRegAuditoria } = require('../helpers/auditoria-log');
 const { addHoursDate } = require('../helpers/formateadores');
 
@@ -21,7 +22,9 @@ const getFacturas = async(req, res = response) => {
         .populate('tipoCompraFactura', 'tipocomprafactDesc')
         .populate('usuarioRegistro', 'nombre')
         .populate('usuarioCargoPDF', 'nombre')
-        .sort({ fechaRegistro: -1 })
+        .populate('sede', 'nombre')
+        .populate('usuarioRetribuible', 'nombre')
+        .sort({ fechaFactura: 1 })
         .limit(Number(process.env.LIMIT_QUERY_FACTURAS)),
 
         //Promesa 2
@@ -42,6 +45,7 @@ const getFacturas = async(req, res = response) => {
  */
 const crearRegFactura = async(req, res = response) => {
     try {
+
         const uid = req.uid; //Saca el uid (identificador del usuario dentro del token de la peticion)
         req.body.usuario = uid;
 
@@ -50,10 +54,14 @@ const crearRegFactura = async(req, res = response) => {
             ...req.body
         });
 
-        const tipoCompraFactura = await TipoCompraFactura.findById(req.body.tipo);
+        const tipoCompraFactura = await TipoCompraFactura.findById(req.body.tipoCompraFactura);
+        const usuarioRetribuible = await Usuario.findById(req.body.usuarioRetribuible);
+        const sede = await Sede.findById(req.body.sede);
 
         facturaNew.fechaFactura = addHoursDate(req.body.fechaFactura);
         facturaNew.tipoCompraFactura = tipoCompraFactura._id;
+        facturaNew.usuarioRetribuible = usuarioRetribuible.uid;
+        facturaNew.sede = sede._id;
 
         const facturaRet = await facturaNew.save();
 
@@ -85,9 +93,10 @@ const buscarRegFacturaId = async(req, res = response) => {
         const facturaRet = await Factura
             .findById(idFactura)
             .populate('usuarioRegistro', 'nombre')
-            .populate('usuarioCargoPDF', 'nombre')
+            .populate('usuarioCargueDocsZIP', 'nombre')
             .populate('tipoCompraFactura', 'tipocomprafactDesc')
-
+            .populate('usuarioRetribuible', 'nombre')
+            .populate('sede', 'nombre')
         if (!facturaRet) {
             return res.status(400).json({
                 status: false,
@@ -160,7 +169,7 @@ const actualizarRegFactura = async(req, res = response) => {
 
         const {...cambio } = req.body;
 
-        const contratoActualizado = await Contrato.findByIdAndUpdate(contratoRetDB, cambio, { new: true });
+        const factuaActualizado = await Factura.findByIdAndUpdate(facturaRetDB, cambio, { new: true });
 
         insertarRegAuditoria(uid, 'ACTUALIZACIÓN DE FACTURA', 'BAJA', JSON.stringify(req.body));
 
@@ -178,7 +187,6 @@ const actualizarRegFactura = async(req, res = response) => {
         });
     }
 }
-
 
 module.exports = {
     getFacturas,

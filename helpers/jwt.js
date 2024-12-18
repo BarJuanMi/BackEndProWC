@@ -8,16 +8,16 @@ const generarJWT = (uid) => {
             uid
         };
 
-        jwt.sign(payload, process.env.JWT_SECRET_KEY, {
-            expiresIn: '12h'
-        }, (err, token) => {
-            if (err) {
-                console.log(err);
-                reject('Error en generacion de JWT');
-            } else {
-                resolve(token);
-            }
-        });
+        jwt.sign(payload, process.env.JWT_SECRET_KEY,
+            //{expiresIn: '72h'}, 
+            (err, token) => {
+                if (err) {
+                    console.log(err);
+                    reject('Error en generacion de JWT');
+                } else {
+                    resolve(token);
+                }
+            });
     });
 }
 
