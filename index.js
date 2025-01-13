@@ -59,6 +59,7 @@ app.use('/api/memorandos', require('./routes/memorandos.route'));
 app.use('/api/contratos', require('./routes/contratos.route'));
 app.use('/api/facturas', require('./routes/facturas.route'));
 app.use('/api/auditorias', require('./routes/auditorias.route'));
+app.use('/api/certbancarias', require('./routes/certbancarias.route'));
 
 app.listen(process.env.PORT, () => {
     console.log('Servidor corriendo en puerto ' + process.env.PORT);

@@ -52,7 +52,7 @@ const crearRegAspirante = async(req, res = response) => {
         aspiranteNew.nombres = String(req.body.nombres).toUpperCase();
         aspiranteNew.apellidos = String(req.body.apellidos).toUpperCase();
         aspiranteNew.numCelular = formatearNumCelular(req.body.telCelular.replace(/\s/g, '')); //Elimina los espacios que pudieran llegar
-        aspiranteNew.estado = 'Registrado';
+        aspiranteNew.estado = 'Registrado en App';
         aspiranteNew.nombApellAspConcat = String(req.body.nombres).toUpperCase() + ' ' + String(req.body.apellidos).toUpperCase();
 
         const aspiranteRet = await aspiranteNew.save();
@@ -106,8 +106,44 @@ const buscarAspirantePorId = async(req, res = response) => {
     }
 }
 
+/**
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ */
+const eliminarAspirante = async(req, res = response) => {
+    const id = req.params.id;
+
+    try {
+        const resAspiranteDB = await Aspirante.findById(id);
+
+        if (!resAspiranteDB) {
+            return res.status(400).json({
+                status: false,
+                msg: 'No existe el aspirante con ese id'
+            });
+        }
+
+        const aspiranteEliminado = await Aspirante.findByIdAndDelete(id);
+
+        res.json({
+            status: true,
+            msg: 'Aspirante eliminado correctamente',
+            aspirante: aspiranteEliminado
+        });
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            status: false,
+            msg: 'Error durante la eliminacion del Aspirante - Ver logs'
+        });
+    }
+}
+
 module.exports = {
     crearRegAspirante,
     getRegAspirantes,
-    buscarAspirantePorId
+    buscarAspirantePorId,
+    eliminarAspirante
 }

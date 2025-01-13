@@ -28,8 +28,6 @@ const EmpleadoSchema = new Schema({
     fechaIngreso: { type: Date, required: [true, 'La fecha de ingreso es necesaria'] },
     estado: { type: Boolean, default: true },
     numHijos: { type: Number, default: 0, },
-    entidadBanco: { type: String, default: 'No Aplica' },
-    numCuentaBanco: { type: String, default: '##########' },
     nacionalidad: { type: Schema.Types.ObjectId, ref: 'Pais' },
     ciudadResidencia: { type: Schema.Types.ObjectId, ref: 'Ciudad' },
     img: { type: String, required: false },

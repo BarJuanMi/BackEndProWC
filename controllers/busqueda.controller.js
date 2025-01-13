@@ -11,6 +11,7 @@ const Retiro = require('../models/retiro.model');
 const Memorando = require('../models/memorando.model');
 const Contrato = require('../models/contrato.model');
 const TipoContrato = require('../models/tipocontrato.model');
+const CertBancaria = require('../models/certbancaria.model');
 
 /**
  * Función para realizar la busqueda por determinado campo de una coleccion donde 
@@ -102,6 +103,13 @@ const busquedaPorColeccion = async(req, res = response) => {
                 .populate('usuarioRegistro', 'nombre')
                 .populate('usuarioCargoPDF', 'nombre')
                 .populate('tipoContrato', 'tipocontratoDesc')
+                .sort({ fechaRegistro: -1 })
+            break;
+        case 'certbancarias':
+            data = await CertBancaria.find({ emplNomApel: regex })
+                .populate('empleado', 'documento nombApellConca emailCorporativo')
+                .populate('usuarioRegistro', 'nombre')
+                .populate('usuarioCargoPDF', 'nombre')
                 .sort({ fechaRegistro: -1 })
             break;
         default:
