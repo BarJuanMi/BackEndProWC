@@ -3,7 +3,6 @@ const Usuario = require('../models/usuario.model');
 const bcrypt = require('bcryptjs');
 const { generarJWT } = require('../helpers/jwt')
 
-
 /**
  * Función para obtener todos los usuarios usando el desde como 
  * condicion inical de busqueda hasta el final de la coleccion.
@@ -12,6 +11,7 @@ const { generarJWT } = require('../helpers/jwt')
  * @returns Array Objetos de Usuarios
  */
 const getUsuarios = async(req, res = response) => {
+
 
     //Si no manda el desde en el path, pone 0
     const desde = Number(req.query.desde) || 0;

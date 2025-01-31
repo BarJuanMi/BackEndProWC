@@ -20,7 +20,7 @@ const getCertBancarias = async(req, res = response) => {
         .populate('empleado', 'documento nombApellConca emailCorporativo')
         .populate('usuarioRegistro', 'nombre')
         .populate('usuarioCargoPDF', 'nombre')
-        .sort({ fechaRegistro: -1 })
+        .sort({ emplNomApel: 1 })
         .limit(Number(process.env.LIMIT_QUERY_CERTIFICACIONES)),
 
         //Promesa 2
