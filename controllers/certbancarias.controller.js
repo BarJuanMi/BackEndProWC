@@ -10,7 +10,6 @@ const Usuario = require('../models/usuario.model');
  * @param {*} res Objeto con la data de retorno seguen la peticion
  */
 const getCertBancarias = async(req, res = response) => {
-
     const desde = Number(req.query.desde) || 0; // comienza a paginar desde el registro 10 en adelante, recordar que le numeracion comienza en 0
     const [certbancarias, total] = await Promise.all([
         //Promesa 1
@@ -43,8 +42,6 @@ const getCertBancarias = async(req, res = response) => {
  */
 const crearRegCertBancaria = async(req, res = response) => {
     try {
-        console.log(req.body);
-
         const uid = req.uid; //Saca el uid (identificador del usuario dentro del token de la peticion)
         req.body.usuario = uid;
 
@@ -89,9 +86,8 @@ const crearRegCertBancaria = async(req, res = response) => {
  * @param {*} res Objeto con la data de retorno seguen la peticion
  */
 const buscarRegCertBancariaId = async(req, res = response) => {
-
-    const idCertBancaria = req.params.id;
     try {
+        const idCertBancaria = req.params.id;
         const certBancariaRet = await CertBancaria
             .findById(idCertBancaria)
             .populate('empleado', 'documento nombApellConca emailCorporativo')
