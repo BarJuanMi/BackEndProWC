@@ -56,7 +56,7 @@ const crearRegContrato = async(req, res = response) => {
         const idEmpleadoDB = await Empleado.findById(req.body.empleado);
 
         const contratoValida = await Contrato.findOne({ empleado: idEmpleadoDB, estado: 'VIGENTE' });
-        console.log(JSON.stringify(contratoValida));
+
         if (contratoValida == null) {
             const tipoContrato = await TipoContrato.findById(req.body.tipo);
             contratoNew.estado = 'VIGENTE';
@@ -76,7 +76,6 @@ const crearRegContrato = async(req, res = response) => {
                 msg: 'Registro de Contrato Creado Satisfactoriamente'
             });
         } else {
-            console.log('No deberia dejar crear');
             res.json({
                 status: false,
                 msg: 'No es posible crear un nuevo contrato, este empleado ya tiene uno VIGENTE.'

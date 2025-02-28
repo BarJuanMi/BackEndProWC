@@ -20,6 +20,8 @@ const getCertBancarias = async(req, res = response) => {
         .populate('empleado', 'documento nombApellConca emailCorporativo')
         .populate('usuarioRegistro', 'nombre')
         .populate('usuarioCargoPDF', 'nombre')
+        .populate('tipoCuentaBanco', 'tipocuentabancaId tipocuentabancaDesc')
+        .populate('emisorCuentaBanco', 'entbancariaId entbancariaDesc')
         .sort({ emplNomApel: 1 })
         .limit(Number(process.env.LIMIT_QUERY_CERTIFICACIONES)),
 
@@ -41,6 +43,8 @@ const getCertBancarias = async(req, res = response) => {
  */
 const crearRegCertBancaria = async(req, res = response) => {
     try {
+        console.log(req.body);
+
         const uid = req.uid; //Saca el uid (identificador del usuario dentro del token de la peticion)
         req.body.usuario = uid;
 
@@ -66,7 +70,7 @@ const crearRegCertBancaria = async(req, res = response) => {
         } else {
             res.json({
                 status: false,
-                msg: 'No es posible crear un nuevo Registro de Certificacion Bancaria, este empleado ya tiene uno VIGENTE.'
+                msg: 'No es posible crear un nuevo Registro de Certificacion Bancaria, este empleado ya tiene uno vigente, para continuar borre el anterior.'
             });
         }
 
@@ -93,6 +97,8 @@ const buscarRegCertBancariaId = async(req, res = response) => {
             .populate('empleado', 'documento nombApellConca emailCorporativo')
             .populate('usuarioRegistro', 'nombre')
             .populate('usuarioCargoPDF', 'nombre')
+            .populate('tipoCuentaBanco', 'tipocuentabancaId tipocuentabancaDesc')
+            .populate('emisorCuentaBanco', 'entbancariaId entbancariaDesc')
 
         if (!certBancariaRet) {
             return res.status(400).json({

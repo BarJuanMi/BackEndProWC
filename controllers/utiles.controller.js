@@ -10,6 +10,8 @@ const TipoContrato = require('../models/tipocontrato.model');
 const TipoCompraFactura = require('../models/tipocomprafactura.model');
 const Usuario = require('../models/usuario.model');
 const CausalRetiro = require('../models/causalretiros.model');
+const EntBancaria = require('../models/entbancaria.model');
+const TipoCuentaBanca = require('../models/tipocuentabanca')
 
 const getCiudades = async(req, res = response) => {
     const [ciudades] = await Promise.all([
@@ -124,6 +126,30 @@ const getCausalesRetiro = async(req, res = response) => {
     })
 }
 
+const getEntBancaria = async(req, res = response) => {
+    const [entbancarias] = await Promise.all([
+        EntBancaria.find({}).sort({ entbancariaId: 1 })
+    ])
+
+    console.log(entbancarias);
+
+    res.json({
+        status: true,
+        entbancarias
+    })
+}
+
+const getTipoCuentaBanca = async(req, res = response) => {
+    const [tipocuentabancas] = await Promise.all([
+        TipoCuentaBanca.find({}).sort({ tipocuentabancaId: 1 })
+    ])
+
+    res.json({
+        status: true,
+        tipocuentabancas
+    })
+}
+
 module.exports = {
     getCiudades,
     getPaises,
@@ -135,4 +161,6 @@ module.exports = {
     getTipoContrato,
     getCausalesRetiro,
     getTipoFactura,
+    getEntBancaria,
+    getTipoCuentaBanca
 }

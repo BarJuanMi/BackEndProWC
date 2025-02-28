@@ -2,7 +2,20 @@
     Ruta: /api/utiles
 */
 const { Router } = require('express');
-const { getCiudades, getPaises, getCargosAspirante, getLocalidadesCiudad, getSedes, getTipoPQRS, getTipoAusentismo, getTipoContrato, getCausalesRetiro, getTipoFactura } = require('../controllers/utiles.controller');
+const {
+    getCiudades,
+    getPaises,
+    getCargosAspirante,
+    getLocalidadesCiudad,
+    getSedes,
+    getTipoPQRS,
+    getTipoAusentismo,
+    getTipoContrato,
+    getCausalesRetiro,
+    getTipoFactura,
+    getEntBancaria,
+    getTipoCuentaBanca
+} = require('../controllers/utiles.controller');
 
 const router = Router();
 
@@ -25,5 +38,9 @@ router.get('/tipocontrato', getTipoContrato);
 router.get('/tipofactura', getTipoFactura);
 
 router.get('/causalesretiro', getCausalesRetiro);
+
+router.get('/entbancarias', getEntBancaria);
+
+router.get('/tipocuentabanca', getTipoCuentaBanca);
 
 module.exports = router;
