@@ -70,7 +70,7 @@ const crearRegCertBancaria = async(req, res = response) => {
         } else {
             res.json({
                 status: false,
-                msg: 'No es posible crear un nuevo Registro de Certificacion Bancaria, este empleado ya tiene uno vigente, para continuar borre el anterior.'
+                msg: 'No es posible crear una nueva certificacion bancaria, este empleado ya tiene uno vigente, para continuar elimine el anterior.'
             });
         }
 
