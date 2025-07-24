@@ -11,7 +11,10 @@ const TipoCompraFactura = require('../models/tipocomprafactura.model');
 const Usuario = require('../models/usuario.model');
 const CausalRetiro = require('../models/causalretiros.model');
 const EntBancaria = require('../models/entbancaria.model');
-const TipoCuentaBanca = require('../models/tipocuentabanca')
+const TipoCuentaBanca = require('../models/tipocuentabanca');
+const EPS = require('../models/entidadprestadorsalud.model');
+const TipoDocumento = require('../models/tipodocumento.model');
+const ARL = require('../models/adminriesgolaboral.model');
 
 const getCiudades = async(req, res = response) => {
     const [ciudades] = await Promise.all([
@@ -131,8 +134,6 @@ const getEntBancaria = async(req, res = response) => {
         EntBancaria.find({}).sort({ entbancariaId: 1 })
     ])
 
-    console.log(entbancarias);
-
     res.json({
         status: true,
         entbancarias
@@ -150,6 +151,39 @@ const getTipoCuentaBanca = async(req, res = response) => {
     })
 }
 
+const getListadoEPS = async(req, res = response) => {
+    const [listadoeps] = await Promise.all([
+        EPS.find({}).sort({ epsId: 1 })
+    ])
+
+    res.json({
+        status: true,
+        listadoeps
+    })
+}
+
+const getTipoDocumento = async(req, res = response) => {
+    const [tipodocumentos] = await Promise.all([
+        TipoDocumento.find({}).sort({ tipodocumentoId: 1 })
+    ])
+
+    res.json({
+        status: true,
+        tipodocumentos
+    })
+}
+
+const getListadoARL = async(req, res = repsonse) => {
+    const [listadoarl] = await Promise.all([
+        ARL.find({}).sort({ arlId: 1 })
+    ])
+
+    res.json({
+        status: true,
+        listadoarl
+    })
+}
+
 module.exports = {
     getCiudades,
     getPaises,
@@ -162,5 +196,8 @@ module.exports = {
     getCausalesRetiro,
     getTipoFactura,
     getEntBancaria,
-    getTipoCuentaBanca
+    getTipoCuentaBanca,
+    getListadoEPS,
+    getTipoDocumento,
+    getListadoARL,
 }

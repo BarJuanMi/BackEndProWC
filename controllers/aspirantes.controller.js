@@ -3,6 +3,7 @@ const Aspirante = require('../models/aspirante.model');
 const Usuario = require('../models/usuario.model');
 const Cargoaspirante = require('../models/cargoaspirante.model');
 const Localidad = require('../models/localidadesciudad.model');
+const TipoDocumento = require('../models/tipodocumento.model');
 const { addHoursDate } = require('../helpers/formateadores');
 const { formatearNumCelular } = require('../helpers/formateadores');
 
@@ -21,6 +22,7 @@ const getRegAspirantes = async(req, res = response) => {
         Aspirante.find({}) //solo me muestra en el resutlado de la consulta las columnas
         .skip(desde)
         .populate('usuarioCreacion', 'nombre')
+        .populate('tipoDocumento', 'tipoDocumentoShort tipoDocumentoDesc')
         .populate('cargoAspirante', 'cargoId cargoDesc')
         .sort({ fechaRegistro: -1 })
         .limit(Number(process.env.LIMIT_QUERY_ASPIRANTES)),
@@ -43,6 +45,8 @@ const getRegAspirantes = async(req, res = response) => {
  */
 const crearRegAspirante = async(req, res = response) => {
     try {
+        console.log(req.body);
+
         const uid = req.uid; //Saca el uid (identificador del usuario dentro del token de la peticion)
         const aspiranteNew = new Aspirante({
             usuarioCreacion: uid,

@@ -14,7 +14,10 @@ const {
     getCausalesRetiro,
     getTipoFactura,
     getEntBancaria,
-    getTipoCuentaBanca
+    getTipoCuentaBanca,
+    getListadoEPS,
+    getListadoARL,
+    getTipoDocumento,
 } = require('../controllers/utiles.controller');
 
 const router = Router();
@@ -42,5 +45,11 @@ router.get('/causalesretiro', getCausalesRetiro);
 router.get('/entbancarias', getEntBancaria);
 
 router.get('/tipocuentabanca', getTipoCuentaBanca);
+
+router.get('/listadoeps', getListadoEPS);
+
+router.get('/listadoarls', getListadoARL);
+
+router.get('/tipodocumento', getTipoDocumento)
 
 module.exports = router;

@@ -2,6 +2,7 @@ const { response } = require('express');
 const Contrato = require('../models/contrato.model');
 const TipoContrato = require('../models/tipocontrato.model');
 const Empleado = require('../models/empleado.model');
+const TipoEmpleado = require('../models/tipoempleado.model');
 const Usuario = require('../models/usuario.model');
 const { addHoursDate } = require('../helpers/formateadores');
 
@@ -102,7 +103,8 @@ const buscarRegContratoId = async(req, res = response) => {
     try {
         const contratoRet = await Contrato
             .findById(idContrato)
-            .populate('empleado', 'documento nombApellConca')
+            .populate('empleado', 'documento nombApellConca tipoEmpleado')
+            .populate('tipoEmpleado', 'tipoEmpleadoDesc')
             .populate('usuarioRegistro', 'nombre')
             .populate('usuarioCargoPDF', 'nombre')
             .populate('usuarioCargueDocsZIP', 'nombre')
@@ -148,11 +150,6 @@ const actualizarRegContrato = async(req, res = response) => {
         }
 
         const {...campos } = req.body;
-
-        campos.fechaFinContrato = new Date();
-
-        console.log(JSON.stringify(campos));
-
         const contratoActualizado = await Contrato.findByIdAndUpdate(idContrato, campos, { new: true });
 
         res.json({

@@ -1,7 +1,7 @@
 const { Schema, model } = require('mongoose');
 
 var rhValido = {
-    values: ['O+', 'O-', 'A+', 'A-', 'B+', 'B-', 'AB+', 'AB-'],
+    values: ['O+', 'O-', 'A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'N/A'],
     message: '{VALUE} no es un rh permitido'
 }
 
@@ -12,8 +12,8 @@ var generoValido = {
 
 const EmpleadoSchema = new Schema({
     documento: { type: String, unique: true, required: [true, 'El numero de documento es necesario'] },
-    tipoDocumento: { type: String, required: [true, 'El tipo de documento es necesario'] },
-    genero: { type: String, required: true, default: 'F', enum: generoValido },
+    tipoDocumento: { type: Schema.Types.ObjectId, ref: 'Tipodocumento' },
+    genero: { type: String, required: true, default: 'FEMENINO', enum: generoValido },
     nombres: { type: String, required: [true, 'El nombre es necesario'] },
     apellidos: { type: String, required: [true, 'El apellido es necesario'] },
     nombApellConca: { type: String, required: [true, 'La concatenacion de nombres y apellidos es necesario'] },
@@ -35,8 +35,8 @@ const EmpleadoSchema = new Schema({
     fechaInactivacion: { type: Date },
     fechaCreacionApp: { type: Date, default: Date.now },
     usuarioCreacion: { type: Schema.Types.ObjectId, ref: 'Usuario' },
-    epsSalud: { type: String, required: true },
-    arlTrabajo: { type: String, required: true },
+    epsSalud: { type: Schema.Types.ObjectId, ref: 'Eps' },
+    arlTrabajo: { type: Schema.Types.ObjectId, ref: 'Arl' },
 }, {
     collection: 'empleados'
 });

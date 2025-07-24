@@ -1,9 +1,8 @@
 const { Schema, model } = require('mongoose');
 
 var aspiranteSchema = new Schema({
-    idAspirante: { type: String, },
     documento: { type: String, required: true },
-    tipoDocumento: { type: String, required: [true, 'El tipo de documento es necesario'] },
+    tipoDocumento: { type: Schema.Types.ObjectId, ref: 'Tipodocumento' },
     nombres: { type: String, required: true },
     apellidos: { type: String, required: true },
     nombApellAspConcat: { type: String, required: true },

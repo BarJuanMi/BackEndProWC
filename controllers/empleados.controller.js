@@ -4,6 +4,8 @@ const TipoEmpleado = require('../models/tipoempleado.model');
 const Pais = require('../models/pais.model');
 const Ciudad = require('../models/ciudad.model');
 const Usuario = require('../models/usuario.model');
+const Eps = require('../models/entidadprestadorsalud.model');
+const Arl = require('../models/adminriesgolaboral.model');
 const { formatearNumCelular } = require('../helpers/formateadores');
 const { validationResult } = require('express-validator');
 
@@ -23,6 +25,9 @@ const getEmpleados = async(req, res = response) => {
         .populate('ciudadResidencia', 'ciudadName')
         .populate('usuarioCreacion', 'nombre')
         .populate('tipoEmpleado', 'tipoEmpleadoDesc')
+        .populate('tipoDocumento', 'tipoDocumentoDesc tipoDocumentoShort')
+        .populate('epsSalud', 'epsDesc')
+        .populate('arlTrabajo', 'arlDesc')
         .sort({ estado: -1, nombres: 1, apellidos: 1 })
         .limit(Number(process.env.LIMIT_QUERY_EMPLEADO)),
 
@@ -77,6 +82,9 @@ const getEmpleadosxTipo = async(req, res = response) => {
         .populate('ciudadResidencia', 'ciudadName')
         .populate('usuarioCreacion', 'nombre')
         .populate('tipoEmpleado', 'tipoEmpleadoDesc')
+        .populate('tipoDocumento', 'tipoDocumentoDesc tipoDocumentoShort')
+        .populate('epsSalud', 'epsDesc')
+        .populate('arlTrabajo', 'arlDesc')
         .sort({ estado: -1, nombres: 1, apellidos: 1 })
         .limit(Number(process.env.LIMIT_QUERY_EMPLEADO)),
 
@@ -152,7 +160,10 @@ const buscarEmpleadoPorId = async(req, res = response) => {
             .populate('nacionalidad', 'countryName')
             .populate('ciudadResidencia', 'ciudadName')
             .populate('usuarioCreacion', 'nombre')
-            .populate('tipoEmpleado', 'tipoEmpleadoDesc');
+            .populate('tipoEmpleado', 'tipoEmpleadoDesc')
+            .populate('tipoDocumento', 'tipoDocumentoDesc tipoDocumentoShort')
+            .populate('epsSalud', 'epsDesc')
+            .populate('arlTrabajo', 'arlDesc');
 
         if (!empleadoRet) {
             return res.status(400).json({
@@ -293,6 +304,9 @@ const obtenerEmpleadosPorEstado = async(req, res = response) => {
         .populate('ciudadResidencia', 'ciudadName')
         .populate('usuarioCreacion', 'nombre')
         .populate('tipoEmpleado', 'tipoEmpleadoDesc')
+        .populate('tipoDocumento', 'tipoDocumentoDesc tipoDocumentoShort')
+        .populate('epsSalud', 'epsDesc')
+        .populate('arlTrabajo', 'arlDesc')
         .sort({ estado: -1, nombres: 1, apellidos: 1 })
     ]);
 
