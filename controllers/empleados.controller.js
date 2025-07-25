@@ -120,6 +120,8 @@ const crearEmpleado = async(req, res = response) => {
             ...req.body
         });
 
+        console.log(req.body);
+
         const errores = validationResult(req);
         if (!errores.isEmpty()) {
             return res.status(400).json({
