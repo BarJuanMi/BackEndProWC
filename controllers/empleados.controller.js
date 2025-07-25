@@ -3,10 +3,10 @@ const Empleado = require('../models/empleado.model');
 const TipoEmpleado = require('../models/tipoempleado.model');
 const Pais = require('../models/pais.model');
 const Ciudad = require('../models/ciudad.model');
+const TipoDocumento = require('../models/tipodocumento.model');
 const Usuario = require('../models/usuario.model');
 const Eps = require('../models/entidadprestadorsalud.model');
 const Arl = require('../models/adminriesgolaboral.model');
-const { formatearNumCelular } = require('../helpers/formateadores');
 const { validationResult } = require('express-validator');
 
 /**
@@ -108,6 +108,11 @@ const crearEmpleado = async(req, res = response) => {
     try {
         const filtroTipo = String(req.params.tipo).toUpperCase();
         const tipoEmpleado = await TipoEmpleado.findOne({ tipoEmpleadoDesc: filtroTipo });
+        const tipoDocumentoId = await TipoDocumento.findById(req.body.tipoDocumento);
+        const paisId = await Pais.findById(req.body.nacionalidad);
+        const ciudadId = await Ciudad.findById(req.body.ciudadResidencia);
+        const epsId = await Eps.findById(req.body.epsSalud);
+        const arlId = await Arl.findById(req.body.arlTrabajo);
 
         const uid = req.uid; //Saca el uid (identificador del usuario dentro del token de la peticion)
         const empleadoNew = new Empleado({
@@ -126,9 +131,14 @@ const crearEmpleado = async(req, res = response) => {
 
         empleadoNew.nombres = String(req.body.nombres).toUpperCase();
         empleadoNew.apellidos = String(req.body.apellidos).toUpperCase();
-        empleadoNew.telCelular = formatearNumCelular(req.body.telCelular.replace(/\s/g, '')); //Elimina los espacios que pudieran llegar
+        empleadoNew.telCelular = String(req.body.telCelular).trim();
         empleadoNew.tipoEmpleado = tipoEmpleado._id;
         empleadoNew.nombApellConca = String(req.body.nombres).toUpperCase() + ' ' + String(req.body.apellidos).toUpperCase();
+        empleadoNew.tipoDocumento = tipoDocumentoId._id;
+        empleadoNew.nacionalidad = paisId._id;
+        empleadoNew.ciudadResidencia = ciudadId._id;
+        empleadoNew.epsSalud = epsId._id;
+        empleadoNew.arlTrabajo = arlId._id;
 
         const empleadoRet = await empleadoNew.save();
 

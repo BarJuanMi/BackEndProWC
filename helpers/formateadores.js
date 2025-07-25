@@ -1,6 +1,5 @@
 const formatearNumCelular = (numCelular) => {
-    let telcelAux = numCelular.substring(0, 3) + ' ' + numCelular.substring(3, numCelular.length);
-
+    let telcelAux = numCelular.trim();
     return telcelAux;
 }
 
@@ -37,7 +36,11 @@ function capitalizeFirstLetter(string) {
 }
 //capitalize all words of a string. 
 function capitalizeWords(string) {
-    return string.replace(/(?:^|\s)\S/g, function(a) { return a.toUpperCase(); });
+    let resultado = texto.replace(/[ao]/g, (match) => {
+        if (match === 'a') return 'x';
+        if (match === 'o') return 'y';
+    });
+    console.log(resultado); // "Hyly mxndy"
 };
 
 

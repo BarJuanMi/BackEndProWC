@@ -53,11 +53,18 @@ const crearRegAspirante = async(req, res = response) => {
             ...req.body
         });
 
+        const tipoDocumentoId = await TipoDocumento.findById(req.body.tipoDocumento);
+        const cargoAspiranteId = await Cargoaspirante.findById(req.body.cargoAspirante);
+        const localidadId = await Localidad.findById(req.body.localidad);
+
         aspiranteNew.nombres = String(req.body.nombres).toUpperCase();
         aspiranteNew.apellidos = String(req.body.apellidos).toUpperCase();
-        aspiranteNew.numCelular = formatearNumCelular(req.body.telCelular.replace(/\s/g, '')); //Elimina los espacios que pudieran llegar
+        aspiranteNew.numCelular = String(req.body.telCelular).trim();
         aspiranteNew.estado = 'Registrado en App';
         aspiranteNew.nombApellAspConcat = String(req.body.nombres).toUpperCase() + ' ' + String(req.body.apellidos).toUpperCase();
+        aspiranteNew.tipoDocumento = tipoDocumentoId._id;
+        aspiranteNew.cargoAspirante = cargoAspiranteId._id;
+        aspiranteNew.localidad = localidadId._id;
 
         const aspiranteRet = await aspiranteNew.save();
 
